@@ -1,0 +1,25 @@
+name: 在线网页浏览器验收
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出网站代码
+        uses: actions/checkout@v4
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 安装浏览器测试组件
+        run: python -m pip install selenium
+      - name: 启动独立本地网页服务
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/shopping-http.log 2>&1 &
+          sleep 2
+      - name: 执行网页交互验收
+        run: python tests/browser_smoke.py
