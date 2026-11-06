@@ -26,6 +26,10 @@ jobs:
         run: python -m unittest discover -s tests -p "test_research.py" -v
       - name: 实测1688闲鱼盼之公开网页（遵守robots，无登录）
         run: python research/public_probe.py --output output/公开网页采集实验.json
+      - name: 安装浏览器工具（免费 Chrome）
+        run: python -m pip install selenium
+      - name: 闲鱼与盼之动态网页单次匿名试验
+        run: python research/browser_probe.py --output output/公开浏览器补充实验.json
       - name: 将采集结果写入工作流摘要
         run: |
           python - <<'PY'
@@ -46,5 +50,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 三平台真实网络实验结果
-          path: output/公开网页采集实验.json
+          path: |
+            output/公开网页采集实验.json
+            output/公开浏览器补充实验.json
           retention-days: 14
