@@ -6,13 +6,14 @@
 <aside class="sidebar"><div class="brand"><div class="brand-symbol">选</div><div><strong>智选台</strong><small>智能购物决策系统</small></div></div>
 <div class="side-label">工作空间</div><nav aria-label="模块导航"><a href="#search" class="nav-active">⌕　商品搜索</a><a href="#candidates">▤　商品候选</a><a href="#comparison">▥　比较结果</a><a href="#manage">⇩　数据管理</a></nav>
 <div class="side-bottom"><div class="side-info"><span class="live-dot"></span>在线网页 · 本地保存</div><small>不接入账号 · 不自动购买</small><small>当前为人工核验型在线原型</small></div></aside>
-<main class="main"><header class="topbar"><div class="crumb">我的工作台 <span>/</span> <strong>商品搜索</strong></div><div class="top-status">V0.5 · 在线版候选</div></header>
+<main class="main"><header class="topbar"><div class="crumb">我的工作台 <span>/</span> <strong>商品搜索</strong></div><div class="top-status">V0.6 · 书签辅助导入</div></header>
 <div class="content"><div class="intro"><div><div class="eyebrow">SHOPPING INTELLIGENCE</div><h1>把值得买的商品，<em>筛选出来。</em></h1><p>一个地方管理需求、跨平台搜索入口、商品证据与购买决策。每项价格都保留核验状态，不用未经确认的数据冒充实时比价。</p></div><div class="intro-decoration" aria-hidden="true"><span>01 / 发现</span><span>02 / 核验</span><span>03 / 决策</span></div></div>
 <section class="panel" id="search"><div class="panel-heading"><div><div class="section-kicker">01 · FIND</div><h2>开始一次购物筛选</h2><p>确定搜索目标与预算，然后在不同平台打开对应的搜索页面。</p></div><span class="step-tag">需求输入</span></div>
 <div class="search-controls"><label>想买什么？<input id="term" maxlength="120" placeholder="例如：百元内带麦克风游戏耳机" autocomplete="off"></label><label>预算上限 · 元<input id="budget" type="number" min="0" max="100000000" step="0.01" placeholder="例如：100"></label><label>查看类型<select id="category"><option value="all">全部类型</option><option value="standard">普通商品</option><option value="used">二手商品</option><option value="wholesale">1688 批发</option><option value="account">游戏账号</option></select></label></div>
 <div class="platforms" id="platforms"></div><div class="hint-row"><span>ⓘ</span><p>点击平台将打开该网站的搜索页。部分平台只支持进入首页自行搜索；这里没有自动抓取实时商品列表或价格。</p></div></section>
 <div class="stats"><div class="stat"><span>已录入候选</span><strong id="stat-total">0</strong><small>浏览器内保存</small></div><div class="stat"><span>可参与报价比较</span><strong id="stat-ranked">0</strong><small>满足人工核验条件</small></div><div class="stat"><span>专项核验 / 待处理</span><strong id="stat-pending">0</strong><small>不会强行混合排名</small></div></div>
 <section class="panel" id="candidates"><div class="panel-heading"><div><div class="section-kicker">02 · COLLECT</div><h2>录入商品候选</h2><p>从各平台复制真实商品链接，逐项确认信息后再比较。</p></div><button id="toggle-form" class="btn btn-primary" type="button">＋ 添加商品</button></div>
+<div class="candidate-form" id="bookmarklet-guide" style="margin-bottom:16px"><strong>新增：一键带回商品链接（电脑版浏览器）</strong><p style="font-size:13px;color:#536d79;margin:8px 0">把下面的“保存当前商品”拖到浏览器书签栏；之后在京东、淘宝、拼多多、1688、闲鱼或盼之打开具体商品详情页，点击该书签即可将标题和链接预填到本系统。只传输商品标题和清理过参数的链接，不采集密码、Cookie、订单或聊天记录。价格及规格仍需人工核验。</p><a id="shopping-bookmarklet" class="btn btn-plain" draggable="true" href="#" title="将我拖到浏览器书签栏">保存当前商品（拖到书签栏）</a><small style="display:block;margin-top:8px;color:#778b92">该功能属于用户主动辅助导入，不是全站自动搜索；仅在实际商品页使用。</small></div>
 <form id="candidate-form" class="candidate-form hidden" autocomplete="off"><div class="form-heading"><strong>添加商品资料</strong><button id="close-form" class="icon-button" type="button" aria-label="关闭录入">×</button></div><div class="form-grid">
 <label>平台 <select name="platform" id="f-platform" required><option value="jd">京东</option><option value="taobao">淘宝 / 天猫</option><option value="pdd">拼多多</option><option value="xianyu">闲鱼</option><option value="wholesale">1688</option><option value="pzds">盼之代售</option></select></label>
 <label class="span2">商品名称 <input name="title" maxlength="160" required placeholder="请填写实际商品标题或型号"></label>
@@ -194,7 +195,46 @@ function onAdd(e){e.preventDefault();const f=e.currentTarget;const fd=new FormDa
  state.items.push(x);persist();f.reset();platformFields();formShow(false);render();toast('已保存候选商品。资料只保存在当前浏览器。')
 }
 function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
-function setup(){hydrate();render();['term','budget','category'].forEach(k=>$('#'+k).addEventListener('input',setNeeds));
+function collectFromCurrentPage(){
+ try{
+  var originUrl=new URL(location.href),host=originUrl.hostname.toLowerCase();
+  function matches(domain){return host===domain||host.endsWith("."+domain)}
+  var domains=[["jd.com","jd"],["3.cn","jd"],["taobao.com","taobao"],["tmall.com","taobao"],["pinduoduo.com","pdd"],["yangkeduo.com","pdd"],["goofish.com","xianyu"],["2.taobao.com","xianyu"],["1688.com","wholesale"],["pzds.com","pzds"]];
+  var platform="";
+  for(var entry of domains){if(matches(entry[0])){platform=entry[1];break}}
+  if(originUrl.protocol!=="https:"||!platform){alert("请先打开支持的电商平台商品详情页面。");return}
+  var clean=new URL(originUrl.origin+originUrl.pathname);
+  for(var key of ["id","itemId","goodsId","goods_id","productId","offerId"]){
+   var value=originUrl.searchParams.get(key);
+   if(value&&/^[a-zA-Z0-9_-]{1,80}$/.test(value))clean.searchParams.set(key,value);
+  }
+  var og=document.querySelector('meta[property="og:title"]');
+  var title=((og&&og.content)||document.title||"未命名商品").replace(/\s+/g," ").slice(0,160);
+  if(!confirm("只将本页公开商品标题和商品链接预填进购物系统，仍须人工核对价格、规格和交易风险。是否继续？"))return;
+  var payload=encodeURIComponent(JSON.stringify({platform:platform,title:title,url:clean.href}));
+  window.open("https://tanzhi6269330-star.github.io/shopping-intelligence/#si-import="+payload,"_blank","noopener,noreferrer");
+ }catch(e){alert("无法读取当前页面，请检查商品链接是否有效。")}
+}
+function importBookmarkletCandidate(){
+ const h=location.hash||"";
+ if(!h.startsWith("#si-import="))return;
+ try{
+  if(h.length>5000)throw Error("导入数据过长");
+  const row=JSON.parse(decodeURIComponent(h.slice("#si-import=".length)));
+  if(!row||!PLATFORMS[row.platform]||typeof row.title!=="string"||typeof row.url!=="string"||!validPlatformUrl(row.url,row.platform))throw Error("无效的商品数据");
+  const f=$('#candidate-form');
+  f.elements.namedItem('platform').value=row.platform;
+  f.elements.namedItem('title').value=row.title.slice(0,160);
+  f.elements.namedItem('url').value=row.url.slice(0,2000);
+  platformFields();
+  formShow(true);
+  toast("已预填商品标题和链接。请核实标价、运费、规格及专项风险后再保存。");
+ }catch(e){toast("书签导入失败：平台或数据格式不符合要求")}
+ finally{history.replaceState(null,'',location.pathname+location.search)}
+}
+function setup(){hydrate();render();
+ const bookmarklet=$('#shopping-bookmarklet');if(bookmarklet)bookmarklet.href='javascript:('+collectFromCurrentPage.toString()+')()';
+ importBookmarkletCandidate();['term','budget','category'].forEach(k=>$('#'+k).addEventListener('input',setNeeds));
  $('#toggle-form').addEventListener('click',()=>formShow(true));$('#close-form').addEventListener('click',()=>formShow(false));$('#candidate-form').addEventListener('submit',onAdd);$('#f-platform').addEventListener('change',platformFields);
  $('#export-json').addEventListener('click',()=>download('智能购物系统_候选备份.json',JSON.stringify(state,null,2),'application/json;charset=utf-8'));
  $('#export-csv').addEventListener('click',()=>download('智能购物系统_核验列表.csv',exportCsv(state.items,state.needs),'text/csv;charset=utf-8'));
