@@ -36,3 +36,5 @@ jobs:
           sleep 2
       - name: 对话引擎真实 Chrome 交互测试
         run: python tests/chat_browser_smoke.py
+      - name: 无需额外付费的评测搜索前端模拟验收
+        run: python tests/live_review_browser_smoke.py
