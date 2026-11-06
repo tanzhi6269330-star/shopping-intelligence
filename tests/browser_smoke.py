@@ -43,8 +43,14 @@ try:
     for name, val in fields.items():
         form.find_element(By.CSS_SELECTOR, f'[name="{name}"]').send_keys(val)
     for name in ("skuChecked", "priceChecked", "costChecked"):
-        form.find_element(By.CSS_SELECTOR, f'[name="{name}"]').click()
-    form.find_element(By.CSS_SELECTOR, 'button[type="submit"]').click()
+        check = form.find_element(By.CSS_SELECTOR, f'[name="{name}"]')
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", check)
+        time.sleep(0.15)
+        check.click()
+    submit = form.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", submit)
+    time.sleep(0.15)
+    submit.click()
     wait.until(lambda d: "测试耳机A" in d.find_element(By.ID, "candidates-list").text)
     assert "测试耳机A" in driver.find_element(By.ID, "candidates-list").text
     driver.refresh()
