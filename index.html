@@ -1,247 +1,65 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="智能购物决策系统 - 中文多平台候选搜寻、核验、比价与购买决策工具"><meta name="theme-color" content="#12283c"><title>智能购物决策系统｜网页版</title><style>
-:root{--ink:#182e3e;--muted:#718390;--line:#e4ebef;--surface:#fff;--bg:#f4f7f8;--accent:#037d75;--accent-light:#e1f3ef;--orange:#f9ad59;--red:#bc4b3b}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft Yahei",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}input,select,textarea{border:1px solid #d9e4e9;border-radius:8px;background:#fff;padding:11px 12px;outline:none;min-height:43px;width:100%;color:var(--ink)}input:focus,select:focus,textarea:focus{border-color:#37a49a;box-shadow:0 0 0 3px #d9f1ed}input[type=checkbox]{width:16px;min-height:16px;accent-color:var(--accent)}.app-shell{display:flex;min-height:100vh}.sidebar{width:245px;background:#12283a;color:#fff;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;padding:28px 18px;z-index:10}.brand{display:flex;gap:12px;align-items:center;padding:0 10px 50px}.brand-symbol{background:#13a395;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;font-weight:750}.brand strong{display:block;font-size:20px;letter-spacing:1px}.brand small{font-size:10px;color:#a7b9c7;letter-spacing:.5px}.side-label{font-size:11px;letter-spacing:2px;padding:0 13px 14px;color:#668295}.sidebar nav{display:grid;gap:8px}.sidebar nav a{padding:11px 13px;color:#bbced8;border-radius:9px;font-size:13px}.sidebar nav a:hover,.sidebar nav a.nav-active{background:#213e50;color:#fff}.side-bottom{margin-top:auto;display:grid;gap:10px;padding:18px 11px 5px;border-top:1px solid #2f4859;color:#8099a9;font-size:11px}.side-bottom small{color:#8099a9}.side-info{color:#c1d3dc}.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#50d1b6;margin-right:6px}.main{margin-left:245px;flex:1;min-width:0}.topbar{background:var(--surface);height:63px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 45px}.crumb{color:#7b8d99;font-size:12px}.crumb span{padding:0 10px;color:#c8d4da}.crumb strong{color:#223e50}.top-status{font-size:11px;border:1px solid #dbe5e7;color:#5d727d;border-radius:20px;padding:6px 11px}.content{max-width:1240px;padding:40px 45px 22px;margin:auto}.intro{background:#17394a;color:white;border-radius:18px;padding:37px 42px;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;overflow:hidden;position:relative}.intro:before{content:"";position:absolute;border:1px solid #457183;border-radius:50%;width:370px;height:370px;right:-75px;top:-185px}.intro:after{content:"";position:absolute;border:1px solid #3d6273;border-radius:50%;width:250px;height:250px;right:45px;top:-120px}.eyebrow{font-size:10px;letter-spacing:2.5px;color:#8dc9be;font-weight:700}.intro h1{font-size:30px;letter-spacing:-.5px;line-height:1.4;margin:12px 0}.intro h1 em{color:#6fe3d1;font-style:normal}.intro p{font-size:12px;max-width:630px;line-height:1.9;color:#b9cbd4;margin:0}.intro-decoration{display:grid;gap:10px;margin-left:20px;z-index:1;flex-shrink:0}.intro-decoration span{border:1px solid #476c7e;padding:9px 17px;border-radius:30px;font-size:11px;letter-spacing:1px;color:#b6d7df;text-align:center}.panel{background:#fff;border:1px solid #e5ebee;border-radius:14px;padding:28px;margin-bottom:18px;box-shadow:0 3px 16px #152c3d05;scroll-margin-top:15px}.panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:22px}.section-kicker{color:var(--accent);letter-spacing:1.7px;font-weight:750;font-size:10px}.panel h2{margin:3px 0 2px;font-size:19px;letter-spacing:-.3px}.panel-heading p{margin:0;color:var(--muted);font-size:12px}.step-tag{border:1px solid var(--line);border-radius:8px;background:#f7faf9;padding:6px 11px;color:#748995;white-space:nowrap;font-size:11px}.search-controls{display:grid;grid-template-columns:minmax(230px,2fr) minmax(120px,1fr) minmax(150px,1fr);gap:13px;margin-bottom:22px}.search-controls label,.form-grid label{color:#526b79;font-size:12px;display:grid;gap:6px;font-weight:600}.platforms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.platform{display:flex;align-items:center;gap:12px;border:1px solid #e1ebee;border-radius:11px;padding:15px 13px;background:#fff;text-align:left;transition:background .15s,border-color .15s}.platform:hover{background:#f0faf7;border-color:#71c7b8}.platform-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:9px;font-weight:850;color:white;font-size:13px;flex-shrink:0}.platform-info{min-width:0;flex:1}.platform-info strong{display:block;font-size:13px}.platform-info small{color:#8597a3;font-size:10px;white-space:normal;display:block}.platform-arrow{color:#99aab2;font-size:15px}.hint-row{display:flex;gap:10px;align-items:flex-start;background:#f5f8f8;padding:11px 13px;border-radius:8px;margin-top:17px;color:#77909d}.hint-row span{color:#3e9488}.hint-row p{margin:0;font-size:11px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:18px}.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 22px;display:grid;gap:4px}.stat span{font-size:12px;color:#6f8794}.stat strong{font-size:29px;font-weight:750;line-height:1.2}.stat small{font-size:10px;color:#9babb3}.btn{border:1px solid #dce6e8;border-radius:9px;padding:10px 14px;font-weight:600;font-size:12px;min-height:40px}.btn-primary{color:#fff;background:#047e73;border-color:#047e73}.btn-primary:hover{background:#036a62}.btn-plain{background:#fff;color:#365364}.btn-plain:hover{background:#f2f8f6}.btn-danger{background:#fff;color:#b24c47;border-color:#efd3d0}.btn-danger:hover{background:#fff7f6}.candidate-form{border:1px solid #cfe6e1;border-radius:12px;padding:19px;background:#f9fdfc;margin-bottom:20px}.form-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.form-heading strong{font-size:15px}.icon-button{background:none;border:0;font-size:27px;color:#79909a}.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.span2{grid-column:span 2}.span3{grid-column:span 3}.special-fields{background:#edf7f5;border-radius:9px;padding:15px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.special-title{grid-column:1/-1;color:#06796c;font-weight:750}.special-fields p{font-size:11px;margin:auto;color:#63867e}.checks{display:grid;gap:9px;margin-top:18px}.checks label{font-size:12px;color:#475f6b;display:flex;gap:9px;align-items:center}.checks input{flex-shrink:0}.form-actions{display:flex;justify-content:space-between;align-items:center;margin-top:19px;gap:12px}.error{color:#b8423d;font-size:12px}.candidate-list{display:grid;gap:9px}.empty{background:#f7faf9;border:1px dashed #cddfe0;border-radius:11px;padding:28px;text-align:center;color:#8a9da8;font-size:12px}.item{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--line);border-radius:10px;padding:15px 17px}.item-main{flex:1;min-width:0}.item-title{font-weight:700;color:#263f4c;overflow-wrap:anywhere}.item-meta{font-size:11px;color:#8ba0aa;margin-top:4px}.item-meta a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}.item-note{color:#6e8490;font-size:11px;margin-top:5px;overflow-wrap:anywhere}.item-price{font-size:16px;font-weight:750;white-space:nowrap}.item-price small{display:block;color:#8a9da9;font-size:10px;font-weight:400;text-align:right}.pill{font-size:10px;display:inline-block;padding:3px 8px;border-radius:12px;background:#f0f4f6;color:#5d7888;margin-right:6px}.pill.ok{background:#def4ec;color:#087c60}.pill.warn{background:#fff2e2;color:#9c6716}.pill.block{background:#fde9e6;color:#b14e43}.remove{background:transparent;color:#a2b2bb;border:0;padding:4px 2px;font-size:11px;white-space:nowrap}.remove:hover{color:#b14e43}.ranking{display:grid;gap:9px}.rank{border:1px solid #dde9e7;border-radius:11px;padding:16px;display:flex;align-items:center;gap:16px}.rank-num{height:33px;width:33px;display:grid;place-items:center;background:#e6f5f1;color:#087d70;border-radius:10px;font-weight:800}.rank-details{flex:1;min-width:0}.rank-details strong{display:block;font-size:13px;overflow-wrap:anywhere}.rank-details small{color:#81929e;font-size:11px}.rank-price{font-size:19px;font-weight:800;color:#087b72}.ranking-footer{font-size:11px;color:#78909b;margin-top:12px}.disclaimer{margin-top:16px;background:#f7faf9;border-radius:9px;padding:12px 14px;color:#78919b;font-size:11px}.actions{display:flex;flex-wrap:wrap;gap:10px}.import-btn{display:inline-flex;align-items:center;cursor:pointer}.privacy-note{margin-top:18px;font-size:11px;color:#7c939d}footer{display:flex;justify-content:space-between;font-size:11px;color:#9db0b9;padding:13px 0 25px}.hidden{display:none!important}.toast{position:fixed;bottom:25px;right:24px;z-index:100;background:#1e394a;color:#fff;border-radius:9px;padding:12px 19px;box-shadow:0 8px 30px #17314026;visibility:hidden;max-width:340px}.toast.show{visibility:visible}@media(max-width:1050px){.sidebar{width:210px}.main{margin-left:210px}.content{padding:28px 25px}.topbar{padding:0 25px}.intro-decoration{display:none}.platforms{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:730px){.sidebar{position:static;width:auto;min-height:0;padding:15px 14px}.brand{padding:0}.sidebar nav,.side-label,.side-bottom{display:none}.app-shell{display:block}.main{margin:0}.topbar{height:45px;padding:0 15px}.content{padding:17px 13px}.intro{padding:25px 20px}.intro h1{font-size:23px}.panel{padding:20px 16px}.search-controls{grid-template-columns:1fr}.platforms{grid-template-columns:1fr 1fr;gap:8px}.platform{padding:10px}.platform-icon{height:30px;width:30px}.stats{gap:8px}.stat{padding:12px 10px}.stat strong{font-size:22px}.stat small{font-size:9px}.form-grid{grid-template-columns:1fr 1fr}.span3{grid-column:span 2}.span2{grid-column:span 2}.special-fields{grid-template-columns:1fr 1fr}.special-fields p{grid-column:1/-1}.panel-heading{flex-wrap:wrap}.item{flex-wrap:wrap}.item-price{margin-left:auto}.actions .btn{width:100%;justify-content:center}footer{display:block}footer span{display:block}}@media(max-width:390px){.platforms{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:span 2}}
-
-</style></head>
-<body><div class="app-shell">
-<aside class="sidebar"><div class="brand"><div class="brand-symbol">选</div><div><strong>智选台</strong><small>智能购物决策系统</small></div></div>
-<div class="side-label">工作空间</div><nav aria-label="模块导航"><a href="#search" class="nav-active">⌕　商品搜索</a><a href="#candidates">▤　商品候选</a><a href="#comparison">▥　比较结果</a><a href="#manage">⇩　数据管理</a></nav>
-<div class="side-bottom"><div class="side-info"><span class="live-dot"></span>在线网页 · 本地保存</div><small>不接入账号 · 不自动购买</small><small>当前为人工核验型在线原型</small></div></aside>
-<main class="main"><header class="topbar"><div class="crumb">我的工作台 <span>/</span> <strong>商品搜索</strong></div><div class="top-status">V0.6 · 书签辅助导入</div></header>
-<div class="content"><div class="intro"><div><div class="eyebrow">SHOPPING INTELLIGENCE</div><h1>把值得买的商品，<em>筛选出来。</em></h1><p>一个地方管理需求、跨平台搜索入口、商品证据与购买决策。每项价格都保留核验状态，不用未经确认的数据冒充实时比价。</p></div><div class="intro-decoration" aria-hidden="true"><span>01 / 发现</span><span>02 / 核验</span><span>03 / 决策</span></div></div>
-<section class="panel" id="search"><div class="panel-heading"><div><div class="section-kicker">01 · FIND</div><h2>开始一次购物筛选</h2><p>确定搜索目标与预算，然后在不同平台打开对应的搜索页面。</p></div><span class="step-tag">需求输入</span></div>
-<div class="search-controls"><label>想买什么？<input id="term" maxlength="120" placeholder="例如：百元内带麦克风游戏耳机" autocomplete="off"></label><label>预算上限 · 元<input id="budget" type="number" min="0" max="100000000" step="0.01" placeholder="例如：100"></label><label>查看类型<select id="category"><option value="all">全部类型</option><option value="standard">普通商品</option><option value="used">二手商品</option><option value="wholesale">1688 批发</option><option value="account">游戏账号</option></select></label></div>
-<div class="platforms" id="platforms"></div><div class="hint-row"><span>ⓘ</span><p>点击平台将打开该网站的搜索页。部分平台只支持进入首页自行搜索；这里没有自动抓取实时商品列表或价格。</p></div></section>
-<div class="stats"><div class="stat"><span>已录入候选</span><strong id="stat-total">0</strong><small>浏览器内保存</small></div><div class="stat"><span>可参与报价比较</span><strong id="stat-ranked">0</strong><small>满足人工核验条件</small></div><div class="stat"><span>专项核验 / 待处理</span><strong id="stat-pending">0</strong><small>不会强行混合排名</small></div></div>
-<section class="panel" id="candidates"><div class="panel-heading"><div><div class="section-kicker">02 · COLLECT</div><h2>录入商品候选</h2><p>从各平台复制真实商品链接，逐项确认信息后再比较。</p></div><button id="toggle-form" class="btn btn-primary" type="button">＋ 添加商品</button></div>
-<div class="candidate-form" id="bookmarklet-guide" style="margin-bottom:16px"><strong>新增：一键带回商品链接（电脑版浏览器）</strong><p style="font-size:13px;color:#536d79;margin:8px 0">把下面的“保存当前商品”拖到浏览器书签栏；之后在京东、淘宝、拼多多、1688、闲鱼或盼之打开具体商品详情页，点击该书签即可将标题和链接预填到本系统。只传输商品标题和清理过参数的链接，不采集密码、Cookie、订单或聊天记录。价格及规格仍需人工核验。</p><a id="shopping-bookmarklet" class="btn btn-plain" draggable="true" href="#" title="将我拖到浏览器书签栏">保存当前商品（拖到书签栏）</a><small style="display:block;margin-top:8px;color:#778b92">该功能属于用户主动辅助导入，不是全站自动搜索；仅在实际商品页使用。</small></div>
-<form id="candidate-form" class="candidate-form hidden" autocomplete="off"><div class="form-heading"><strong>添加商品资料</strong><button id="close-form" class="icon-button" type="button" aria-label="关闭录入">×</button></div><div class="form-grid">
-<label>平台 <select name="platform" id="f-platform" required><option value="jd">京东</option><option value="taobao">淘宝 / 天猫</option><option value="pdd">拼多多</option><option value="xianyu">闲鱼</option><option value="wholesale">1688</option><option value="pzds">盼之代售</option></select></label>
-<label class="span2">商品名称 <input name="title" maxlength="160" required placeholder="请填写实际商品标题或型号"></label>
-<label class="span3">真实商品详情链接 <input name="url" type="url" required maxlength="2000" placeholder="https://..."></label>
-<label>页面标价 · 元 <input name="price" type="number" required min="0" step="0.01" placeholder="0.00"></label><label>运费 · 元 <input name="shipping" type="number" min="0" step="0.01" placeholder="未知请留空"></label><label>其他费用 · 元 <input name="fees" type="number" min="0" step="0.01" placeholder="未知请留空"></label>
-<label>确认可用优惠 · 元 <input name="discount" type="number" min="0" step="0.01" placeholder="未知请留空"></label><label>卖家类型<select name="seller"><option value="unknown">未核实</option><option value="official">官方店铺（人工核对）</option><option value="authorized">授权店铺（人工核对）</option><option value="merchant">其他商家</option></select></label><label>保修月数 <input name="warranty" type="number" min="0" max="120" step="1" placeholder="未知可不填"></label>
-<div id="wholesale-fields" class="special-fields hidden span3"><div class="special-title">1688 批发核验</div><label>最低起订量 · 件 <input name="minQty" type="number" min="1" max="1000000" step="1" placeholder="必填"></label><p>批发价格可能随数量或规格变化；即使填写起订量，也暂不和单件零售商品混排。</p></div>
-<div id="account-fields" class="special-fields hidden span3"><div class="special-title">盼之账号核验</div><label>游戏名称 <input name="game" maxlength="80" placeholder="例如：王者荣耀"></label><label>游戏区服 <input name="server" maxlength="100" placeholder="例如：安卓QQ区"></label><label>账号/商品编号 <input name="accountCode" maxlength="100" placeholder="可选，勿填写登录账号"></label><p>不得录入密码、身份证、验证码。务必另行核实实名、换绑、找回及平台保障条款。</p></div>
-<label class="span3">交易风险<select name="risk"><option value="none">未发现明确高风险信号（不代表安全）</option><option value="offsite">要求站外付款 / 交易</option><option value="fraud">疑似欺诈或伪造信息</option></select></label>
-<label class="span3">核验备注 <textarea name="note" maxlength="500" rows="2" placeholder="如规格、成色、买家评价、起订限制、账号绑定风险等"></textarea></label></div>
-<div class="checks"><label><input type="checkbox" name="skuChecked"> 已手动核对商品名称与具体规格 / SKU</label><label><input type="checkbox" name="priceChecked"> 已手动核对标价对应当前规格</label><label><input type="checkbox" name="costChecked"> 已核对优惠、运费及全部附加费用（明确为0也需填写0）</label></div>
-<div class="form-actions"><span id="form-error" class="error" role="alert"></span><button class="btn btn-primary" type="submit">保存候选商品</button></div></form>
-<div id="candidates-list" class="candidate-list"></div></section>
-<section class="panel" id="comparison"><div class="panel-heading"><div><div class="section-kicker">03 · DECIDE</div><h2>比较与购买决策</h2><p>仅对已核对商品规格及相关费用的普通商品进行启发式排序。</p></div><span class="step-tag">保守评分</span></div><div id="comparison-list"></div><div class="disclaimer">评分只反映已录入字段的简单规则，不等于真实产品质量、售后或卖家信誉。1688、闲鱼与盼之候选保留独立核验，不与普通零售商品混排。</div></section>
-<section class="panel" id="manage"><div class="panel-heading"><div><div class="section-kicker">04 · OWN YOUR DATA</div><h2>数据管理</h2><p>数据保存在当前浏览器的本地存储中，不上传到 GitHub，不跨设备同步。</p></div></div><div class="actions"><button id="export-json" class="btn btn-plain" type="button">↓ 导出全部数据 JSON</button><button id="export-csv" class="btn btn-plain" type="button">↓ 导出核验表 CSV</button><label class="btn btn-plain import-btn">↑ 导入备份 JSON<input id="import-json" type="file" accept=".json,application/json" hidden></label><button id="clear-all" class="btn btn-danger" type="button">清空当前浏览器数据</button></div><div class="privacy-note">请勿录入订单、住址、账号密码、验证码、身份证等敏感内容。公开 GitHub Pages 网站不能用来保存私人交易凭证；浏览器清理缓存或更换设备会使本地数据丢失，请主动导出备份。</div></section>
-<footer>智能购物决策系统 · 中文网页版 V0.5 <span>可部署至 GitHub Pages · 不含自动下单</span></footer></div></main></div><div id="toast" class="toast" role="status" aria-live="polite"></div><script type="module">
-/** 智能购物决策系统：纯函数内核。无网络请求，不提供实时行情。 */
-export const PLATFORMS = Object.freeze({
- jd:{name:'京东',kind:'standard',home:'https://www.jd.com/'},
- taobao:{name:'淘宝 / 天猫',kind:'standard',home:'https://www.taobao.com/'},
- pdd:{name:'拼多多',kind:'standard',home:'https://www.pinduoduo.com/'},
- xianyu:{name:'闲鱼',kind:'used',home:'https://www.goofish.com/'},
- wholesale:{name:'1688',kind:'wholesale',home:'https://www.1688.com/'},
- pzds:{name:'盼之代售',kind:'account',home:'https://www.pzds.com/'}
-});
-export const KINDS={standard:'普通商品',used:'二手商品',wholesale:'批发商品',account:'游戏账号'};
-export function searchUrl(platform,word){
- const q=encodeURIComponent(String(word||'').trim());
- if(!q) return PLATFORMS[platform]?.home||'';
- const urls={
- jd:`https://search.jd.com/Search?keyword=${q}`,
- taobao:`https://s.taobao.com/search?q=${q}`,
- xianyu:`https://www.goofish.com/search?q=${q}`,
- wholesale:'https://www.1688.com/',
- pdd:'https://www.pinduoduo.com/',
- pzds:'https://www.pzds.com/'
- };
- return urls[platform]||'';
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="对话式智能购物助手"><title>智能购物研究助手｜对话选购</title><style>
+:root{font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;color:#193441;background:#f5f8f9}*{box-sizing:border-box}body{margin:0}header{padding:20px 4%;background:#fff;border-bottom:1px solid #e2e9ed;display:flex;justify-content:space-between;align-items:center}header b{font-size:18px}header a,a{color:#087589}main{max-width:1100px;margin:25px auto;padding:0 18px}h1{font-size:clamp(25px,4vw,36px);margin:0 0 10px}p{line-height:1.65}h2{font-size:17px}.desc{color:#6d828d;margin:0 0 20px}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,1fr);gap:18px}.box{border:1px solid #e0e9ec;background:white;border-radius:16px;box-shadow:0 8px 20px #26455408}.chat{min-height:570px;display:flex;flex-direction:column}.history{padding:18px;flex:1;max-height:580px;min-height:340px;overflow:auto;display:flex;flex-direction:column;gap:12px}.msg{border-radius:13px;padding:13px;line-height:1.65;font-size:14px;white-space:pre-wrap;max-width:94%}.assistant{background:#edf5f6;align-self:flex-start}.user{background:#117b88;color:white;align-self:flex-end}.quick{padding:10px 15px;display:flex;flex-wrap:wrap;gap:6px}.chip{border:1px solid #d1dfe4;border-radius:999px;background:white;color:#456778;padding:7px 11px;font-size:12px;cursor:pointer}form{display:flex;padding:15px;gap:10px;border-top:1px solid #e9eff0}textarea{flex:1;min-height:57px;resize:vertical;border:1px solid #cedce1;border-radius:10px;padding:12px;font:inherit}button.send{background:#107889;border:0;color:white;border-radius:10px;font-weight:700;padding:0 20px;cursor:pointer}.side{display:flex;flex-direction:column;gap:15px}.side .box{padding:17px}.tag{font-size:12px;background:#ecf4f5;color:#356979;display:inline-block;border-radius:6px;margin:3px;padding:6px}.candidate{border:1px solid #e5eef0;border-radius:10px;padding:13px;margin:12px 0}.candidate strong{font-size:14px}.candidate p{font-size:12px;color:#607987;margin:7px 0}.candidate a{font-size:12px;margin-right:10px}.note{font-size:12px;color:#856729;background:#fff8e7;padding:13px;border-radius:9px;line-height:1.7}.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.links a{font-size:12px;background:#eef5f7;padding:7px 9px;border-radius:7px;text-decoration:none}.muted{font-size:12px;color:#738a96;line-height:1.6}.reset{background:#fff;border:1px solid #d3e0e5;border-radius:7px;padding:8px 10px;cursor:pointer;margin-top:10px}@media(max-width:780px){.layout{grid-template-columns:1fr}.history{max-height:480px}header{gap:12px;flex-wrap:wrap}}
+</style></head><body><header><b>智能购物研究助手</b><a href="./classic/">旧版商品核验台</a></header><main><h1>你说想买什么，我来逐步缩小范围。</h1><p class="desc">直接聊天，自动记住预算、用途、品牌和二手偏好；先研究值得买的型号，再寻找各平台报价。</p><div class="layout">
+<section class="box chat"><div id="history" class="history" aria-live="polite"></div><div id="quick" class="quick"></div><form id="chat-form"><textarea id="message" placeholder="例如：找个100元以内、带麦克风的游戏耳机" maxlength="600" aria-label="购物需求"></textarea><button type="submit" class="send">发送</button></form></section>
+<aside class="side"><div class="box"><h2>当前条件</h2><div id="constraints" class="muted">说一句购物需求即可开始。</div><button id="reset" class="reset" type="button">清空本轮对话</button></div><div class="box"><h2>品牌和型号推荐研究</h2><div id="picks" class="muted">开始对话后，根据评测证据显示型号候选。</div></div><div class="box"><h2>评测及跨平台搜索</h2><div class="note">当前为免费的基础对话原型：能保留条件、追问、展示有出处的部分型号建议，但尚未接入在线大模型及实时电商搜索。所有商品价格需另外核验，不会编造实时到手价。</div><div class="links" id="links"></div></div></aside></div><p class="muted">对话数据仅保存在当前浏览器。购物前请核对规格、到手价、售后；1688注意起订量、闲鱼注意成色、盼之注意实名换绑与找回风险。</p></main><script type="module">
+const el=x=>document.querySelector(x),STORE="shopping-chat-v1";
+const init=()=>({category:"",budget:null,brand:"",used:null,mic:null,wireless:null,purpose:"",platform:"",excluded:[],messages:[]});
+let state=init();try{const v=JSON.parse(localStorage.getItem(STORE)||"null");if(v&&Array.isArray(v.messages)&&v.messages.length<=60)state=Object.assign(init(),v)}catch{}
+const sources={
+rtings:{title:"RTINGS 2026年10月预算游戏耳机评测",url:"https://www.rtings.com/headphones/reviews/best/gaming-headsets-under-50"},
+toms:{title:"Tom's Hardware 2026年10月游戏耳机评测",url:"https://www.tomshardware.com/peripherals/gaming-headsets/best-gaming-headsets"}};
+const products=[
+{brand:"HyperX",model:"Cloud III 有线",note:"专业评测认可舒适性与基础游戏表现，需核验国内版本和售价。",src:["rtings","toms"]},
+{brand:"SteelSeries",model:"Arctis Nova 1",note:"入门有线游戏耳机，作为对照研究，需核验国内渠道和售后。",src:["toms"]},
+{brand:"Turtle Beach",model:"Atlas 200",note:"轻量化有线游戏耳机，国内在售与具体版本尚未确认。",src:["toms"]}];
+const brands={金士顿:"HyperX",赛睿:"SteelSeries",乌龟海岸:"Turtle Beach"};
+function node(tag,cl,txt){const x=document.createElement(tag);if(cl)x.className=cl;if(txt!==undefined)x.textContent=txt;return x}
+function anchor(name,url){const a=node("a","",name);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a}
+function typeOf(s){if(/耳机|耳麦|headset/i.test(s))return "耳机";if(/王者荣耀账号|游戏账号|代售账号/.test(s))return "游戏账号";if(/笔记本|电脑|主机/.test(s))return "电脑";if(/手机|平板/.test(s))return "手机";if(/键盘|鼠标/.test(s))return "外设";if(/洗衣机|冰箱|空调/.test(s))return "家电";return ""}
+function budgetOf(s){const m=s.match(/(?:预算|以内|低于|不超过|最多|上限|降到|便宜到|控制在)\s*(\d+(?:\.\d+)?)\s*(千|万|元|块)?|(\d+(?:\.\d+)?)\s*(千|万|元|块)\s*(?:左右|以内|以下|封顶)/);if(m){const n=Number(m[1]||m[3]);const unit=m[2]||m[4];const val=n*(unit==="千"?1000:unit==="万"?10000:1);if(val>0&&val<1e7)return val}const x=s.match(/(\d+(?:\.\d+)?)\s*(?:元|块)?\s*(?:以内|以下)/);if(x)return Number(x[1]);return null}
+function absorb(t){
+ const cat=typeOf(t);if(cat)state.category=cat;
+ const b=budgetOf(t);if(b!==null)state.budget=b;else if(/再便宜点|便宜点|降低预算/.test(t)&&state.budget)state.budget=Math.max(10,Math.round(state.budget*.75/10)*10);
+ if(/不要二手|只要全新|不考虑二手|排除二手/.test(t))state.used=false;else if(/二手也行|接受二手|闲鱼也可以/.test(t))state.used=true;
+ if(/不需要麦|不用麦|不要麦/.test(t))state.mic=false;else if(/麦克风|带麦|开黑|语音/.test(t))state.mic=true;
+ if(/只要无线|必须无线|蓝牙连接/.test(t))state.wireless=true;else if(/有线就行|只要有线|不考虑无线/.test(t))state.wireless=false;
+ if(/游戏|电竞|开黑/.test(t))state.purpose="游戏";else if(/听歌|音乐|通勤/.test(t))state.purpose="音乐/通勤";
+ if(/不限品牌|其他品牌|换个品牌|品牌不限/.test(t))state.brand="";
+ const m=t.match(/(?:只要|指定|优先|想看)(?:品牌)?\s*(HyperX|金士顿|雷蛇|Razer|Sony|索尼|华为|小米|赛睿|SteelSeries|Turtle Beach)/i);if(m)state.brand=brands[m[1]]||m[1];
+ const ex=t.match(/(?:不要|排除)(HyperX|金士顿|雷蛇|Razer|索尼|华为|小米|赛睿|SteelSeries|Turtle Beach)/i);if(ex)state.excluded.push(brands[ex[1]]||ex[1]);
+ const p=t.match(/闲鱼|1688|盼之代售|京东|淘宝|天猫|拼多多/);if(p)state.platform=p[0]==="天猫"?"淘宝":p[0];
 }
-export function validPlatformUrl(raw,platform){
- try {
-  const u=new URL(String(raw).trim());
-  if(u.protocol!=='https:' || u.username || u.password || u.port || !u.hostname || u.hostname.endsWith('.'))return false;
-  const map={
-   jd:['jd.com','3.cn'], taobao:['taobao.com','tmall.com'],pdd:['pinduoduo.com','yangkeduo.com'],
-   xianyu:['goofish.com','2.taobao.com'],wholesale:['1688.com'],pzds:['pzds.com']
-  };
-  return (map[platform]||[]).some(d=>u.hostname===d||u.hostname.endsWith('.'+d));
- }catch{return false;}
+function candidates(){
+ if(state.category!=="耳机"||state.wireless===true)return [];
+ return products.filter(p=>(!state.brand||p.brand.toLowerCase()===state.brand.toLowerCase())&&!state.excluded.some(x=>p.brand.toLowerCase()===x.toLowerCase()));
 }
-export function positiveMoney(value){
- if(value===''||value==null||typeof value==='boolean')return null;
- const n=Number(value);
- return Number.isFinite(n)&&n>=0&&n<=1e9?Math.round(n*100)/100:null;
+function question(){
+ if(!state.category)return "你想买什么？可以直接描述用途和预算。";
+ if(state.category==="耳机"){if(!state.purpose)return "主要打游戏还是听歌通勤？";if(state.budget===null)return "预算大概多少？例如50元以内、100元左右。";if(state.mic===null)return "需要麦克风进行语音通话吗？";if(state.wireless===null)return "需要无线，还是有线也可以？"}
+ if(state.category==="游戏账号")return "先确认游戏、区服、预算和看重的皮肤/等级，再独立核验实名与换绑风险。";
+ if(state.budget===null)return "预算大概多少？";return "有什么必须具备或无法接受的功能吗？";
 }
-export function validCandidate(row){
- if(!row||typeof row!=='object'||!PLATFORMS[row.platform])return '请选择有效平台';
- if(!String(row.title||'').trim())return '商品名称不能为空';
- if(!validPlatformUrl(row.url,row.platform))return '商品链接必须属于所选平台且使用 HTTPS';
- if(positiveMoney(row.price)===null)return '请输入有效的非负商品标价';
- if(Boolean(row.costChecked) && [row.shipping,row.fees,row.discount].some(v=>positiveMoney(v)===null))return '费用已确认时，运费、附加费用和优惠都必须填明确金额';
- if(row.platform==='wholesale' && (!Number.isSafeInteger(Number(row.minQty)) || Number(row.minQty)<1 || Number(row.minQty)>1000000))return '1688 请填写有效的最低起订量';
- if(row.platform==='pzds'&&(!String(row.game||'').trim()||!String(row.server||'').trim()))return '盼之代售必须填写游戏名称与区服';
- if(Boolean(row.costChecked) && positiveMoney(row.discount)>positiveMoney(row.price)* (row.platform==='wholesale'?Number(row.minQty):1))return '优惠不能超过商品总标价';
- return '';
+function response(){
+ const picks=candidates();let msg="";
+ if(state.category==="耳机"&&picks.length){msg="当前可参考的专业评测型号："+picks.map(x=>x.brand+" "+x.model).join("、")+"。它们仅是研究候选，不代表适合你在国内的预算或已找到商品现价。评测出处见右侧。";}
+ else if(state.category==="耳机"&&state.wireless===true)msg="你要求无线，已排除已有的有线评测候选；待检索新的无线产品证据，不会硬凑推荐。";
+ else msg="条件已记住。当前这一品类尚无经过审核的型号证据库，会保留检索入口而不会编造高性价比品牌排名。";
+ return msg+"\n\n"+question();
 }
-export function kindOf(row){return PLATFORMS[row.platform]?.kind||'standard';}
-export function evaluate(row,needs={}){
- const err=validCandidate(row);if(err)return {status:'invalid',reason:err,total:null,score:null};
- const kind=kindOf(row),price=positiveMoney(row.price);
- const budget=positiveMoney(needs.budget);
- const qty=kind==='wholesale'?Math.max(1,Number(row.minQty)):1;
- const shipping=positiveMoney(row.shipping), fees=positiveMoney(row.fees),discount=positiveMoney(row.discount);
- const checked=Boolean(row.costChecked)&&shipping!==null&&fees!==null&&discount!==null;
- const total=checked ? Math.round((price*qty - Math.min(discount,price*qty)+shipping+fees)*100)/100:null;
- let status='candidate',reason='资料待核验';
- if(row.risk==='offsite'||row.risk==='fraud'){
-  status='blocked';reason='高风险提示：禁止站外交易或疑似欺诈';
- } else if(kind==='wholesale'){
-  status='special';reason='批发商品需核实起订量、阶梯价格及运输费用；不参与单件排名';
- } else if(kind==='account'){
-  status='special';reason='账号交易需独立验号、核实实名和找回风险；不参与普通商品排名';
- } else if(kind==='used'){
-  status='special';reason='二手商品需逐件核实成色、卖家与保障；不参与同款新品排名';
- } else if(!row.skuChecked){
-  status='pending';reason='尚未核对商品规格和页面名称';
- } else if(!checked){
-  status='pending';reason='运费、优惠或附加费用尚未核对';
- } else if(!row.priceChecked){
-  status='pending';reason='尚未核实价格属于当前选择的规格';
- } else if(budget!==null&&budget>0&&total>budget){
-  status='over';reason='已知到手价超过预算';
- } else{
-  status='comparable';reason='可做人工核验报价比较（不代表平台实时认证）';
- }
- // 评分为排序启发式，不表述为质量、信誉的真实结论。
- let score=null;
- if(status==='comparable'){
-  const base=budget>0? Math.max(0,100 - 45*(total/budget)):65;
-  const warranty = Math.min(24,Math.max(0,Number(row.warranty)||0));
-  const seller = ({official:100,authorized:80,merchant:60,unknown:45})[row.seller]??45;
-  score=Math.round((.55*base+.25*seller+.20*Math.min(100,warranty/12*100))*10)/10;
- }
- return {status,reason,total,score,qty};
+function search(platform,q){const x=encodeURIComponent(q);if(platform==="京东")return "https://search.jd.com/Search?keyword="+x;if(platform==="淘宝")return "https://s.taobao.com/search?q="+x;if(platform==="闲鱼")return "https://www.goofish.com/search?q="+x;if(platform==="1688")return "https://www.1688.com/";if(platform==="拼多多")return "https://www.pinduoduo.com/";return "https://www.pzds.com/"}
+function draw(){
+ const hist=el("#history");hist.replaceChildren();if(!state.messages.length)hist.append(node("div","msg assistant","你好。随口说说你想买什么，例如“帮我找一个100元以内、带麦克风的游戏耳机”。我会自动提炼条件，并询问会影响结果的关键细节。"));
+ for(const m of state.messages)hist.append(node("div","msg "+m.role,m.text));hist.scrollTop=hist.scrollHeight;
+ const c=el("#constraints");c.replaceChildren();if(!state.category)c.textContent="尚未开始。";
+ else{const info=[["品类",state.category],["预算",state.budget===null?"不限":"¥"+state.budget],["用途",state.purpose||"待确认"],["麦克风",state.mic===null?"待确认":state.mic?"需要":"不需要"],["连接",state.wireless===null?"未限定":state.wireless?"无线":"有线"],["二手",state.used===null?"未限定":state.used?"允许":"排除"],["品牌",state.brand||"不指定"],["平台",state.platform||"不限"]];for(const [k,v] of info)c.append(node("span","tag",k+"："+v))}
+ const p=el("#picks");p.replaceChildren();const opts=candidates();if(!opts.length)p.append(node("p","muted","目前没有符合条件的已审核型号。对其他品类将先寻找真实评测，不输出虚构榜单。"));else{for(const item of opts){const box=node("div","candidate");box.append(node("strong","",item.brand+" "+item.model),node("p","",item.note));for(const source of item.src)box.append(anchor("评测："+sources[source].title,sources[source].url));p.append(box)}p.append(node("p","muted","评测型号不代表国内价格、SKU或购买渠道已经核验。"))}
+ const links=el("#links");links.replaceChildren();if(state.category){const q=(opts.length?opts[0].brand+" "+opts[0].model:state.category);links.append(anchor("更多评测","https://www.bing.com/search?q="+encodeURIComponent(q+" 测评 横评 性价比")));for(const name of ["京东","淘宝","拼多多","1688","闲鱼","盼之代售"])if(!state.platform||name===state.platform)links.append(anchor(name+"搜索",search(name,q)))}
+ const quick=el("#quick");quick.replaceChildren();for(const t of (state.category?["再便宜点","不要二手","看看其他品牌","只要无线"]:["百元内带麦游戏耳机","找一款高性价比电脑","想买王者荣耀账号"])){const b=node("button","chip",t);b.type="button";b.addEventListener("click",()=>send(t));quick.append(b)}
 }
-export function rank(rows,needs={}){
- const mapped=rows.map(x=>({...x,...evaluate(x,needs)}));
- const ranked=mapped.filter(x=>x.status==='comparable').sort((a,b)=>b.score-a.score || a.total-b.total);
- const other=mapped.filter(x=>x.status!=='comparable');
- return {ranked,other,all:mapped};
-}
-export function csvSafe(v){
- const s=String(v??'');
- const guarded=/^[\s\r\n]*[=+\-@]/.test(s)?"'"+s:s;
- return '"'+guarded.replaceAll('"','""')+'"';
-}
-export function exportCsv(rows,needs){
- const header=['平台','分类','商品名称','链接','页面标价','最低起订量','运费','附加费用','优惠','到手价(人工确认)','比较状态','需核验事项','备注'];
- const data=rank(rows,needs).all.map(x=>[
- PLATFORMS[x.platform].name,KINDS[kindOf(x)],x.title,x.url,x.price,kindOf(x)==='wholesale'?x.minQty:'',x.shipping,x.fees,x.discount,x.total??'',x.status,x.reason,x.note||''
- ]);
- return '\uFEFF'+[header,...data].map(row=>row.map(csvSafe).join(',')).join('\r\n');
-}
-export function safeImport(payload){
- if(!payload||typeof payload!=='object'||payload.version!==1||!Array.isArray(payload.items)||payload.items.length>500)return null;
- if(payload.items.some(x=>validCandidate(x)))return null;
- const n=payload.needs||{};
- if(typeof n!=='object'||Array.isArray(n))return null;
- return {needs:{term:String(n.term||'').slice(0,120),budget:String(n.budget||'').slice(0,16),category:['all','standard','used','wholesale','account'].includes(n.category)?n.category:'all'},items:payload.items.map(x=>({...x,id:String(x.id||'').slice(0,80)}))};
-}
-
-const KEY='shopping-intelligence-zh-v05';
-const $=s=>document.querySelector(s);
-const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=String(txt);return n};
-const initial=()=>({version:1,needs:{term:'',budget:'',category:'all'},items:[]});
-let state=initial();
-try{const x=JSON.parse(localStorage.getItem(KEY)||'null');const clean=safeImport(x);if(clean)state={version:1,...clean}}catch{}
-let toastTimer;
-function toast(message){const t=$('#toast');t.textContent=message;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3400)}
-function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch{toast('浏览器存储不可用，请及时导出备份');return false}}
-function setNeeds(){state.needs={term:$('#term').value.trim(),budget:$('#budget').value,category:$('#category').value};persist();render()}
-function hydrate(){['term','budget','category'].forEach(k=>$('#'+k).value=state.needs[k]??'')}
-const niceMoney=n=>Number.isFinite(n)?'¥'+n.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}):'待核验';
-const color={jd:'#d9363e',taobao:'#f07639',pdd:'#ec5a54',xianyu:'#f8a23a',wholesale:'#d96b1d',pzds:'#5271a8'};
-const iconText={jd:'京',taobao:'淘',pdd:'拼',xianyu:'闲',wholesale:'批',pzds:'盼'};
-const sub={jd:'品牌新品 · 公开搜索入口',taobao:'淘宝 / 天猫 · 公开搜索入口',pdd:'打开官网 · 站内自行搜索',xianyu:'二手商品 · 逐件核对',wholesale:'打开官网后站内搜索 · 核起订量与阶梯价',pzds:'进入官网 · 选择游戏后搜索'};
-function renderPlatforms(){const holder=$('#platforms');holder.replaceChildren();for(const [id,p] of Object.entries(PLATFORMS)){
- const a=el('a','platform');a.href=searchUrl(id,state.needs.term);a.target='_blank';a.rel='noopener noreferrer';a.title='打开'+p.name+'，请在平台核实实际搜索结果';
- const mark=el('span','platform-icon',iconText[id]);mark.style.background=color[id];const info=el('span','platform-info');info.append(el('strong','',p.name),el('small','',sub[id]));a.append(mark,info,el('span','platform-arrow','↗'));holder.append(a);
-}}
-const titleMap={comparable:'可比较',pending:'待核验',special:'专项核验',over:'超过预算',blocked:'高风险阻断',candidate:'待处理',invalid:'无效记录'};
-function tagClass(status){return ['comparable'].includes(status)?'ok':['blocked','invalid'].includes(status)?'block':'warn'}
-function showEmpty(node,msg){node.replaceChildren(el('div','empty',msg))}
-function render(){renderPlatforms();const n=state.needs;const selected=state.items.filter(x=>n.category==='all'||kindOf(x)===n.category);const r=rank(selected,n);
- $('#stat-total').textContent=state.items.length;$('#stat-ranked').textContent=r.ranked.length;$('#stat-pending').textContent=r.other.length;
- const list=$('#candidates-list');list.replaceChildren();if(!selected.length){showEmpty(list,'还没有候选商品。先在平台中搜索，再点击“添加商品”录入真实链接。')}else{
-  for(const x of [...selected].reverse()){
-   const outcome=evaluate(x,n);const card=el('div','item');const main=el('div','item-main');const header=el('div');header.append(el('span','pill',PLATFORMS[x.platform].name),el('span','pill '+tagClass(outcome.status),titleMap[outcome.status]));main.append(header,el('div','item-title',x.title));
-   const meta=el('div','item-meta');const link=el('a','', '查看商品详情 ↗');link.href=x.url;link.target='_blank';link.rel='noopener noreferrer';meta.append(link,document.createTextNode(' · '+KINDS[kindOf(x)]+' · '+outcome.reason));main.append(meta);
-   if(x.note)main.append(el('div','item-note',x.note));
-   if(kindOf(x)==='account')main.append(el('div','item-note',`游戏：${x.game}　区服：${x.server}　账号编号：${x.accountCode||'待核实'}`));
-   if(kindOf(x)==='wholesale')main.append(el('div','item-note',`最低起订量：${x.minQty} 件；实际阶梯单价需另行核对`));
-   const price=el('div','item-price',outcome.total===null?niceMoney(Number(x.price)):niceMoney(outcome.total));price.append(el('small','',outcome.total===null?'页面标价 · 未核实到手价':'按录入费用计算'));
-   const del=el('button','remove','移除');del.type='button';del.setAttribute('aria-label','移除 '+x.title);del.addEventListener('click',()=>{if(!confirm('确认移除这条商品记录？'))return;state.items=state.items.filter(o=>o.id!==x.id);persist();render()});card.append(main,price,del);list.append(card);
-  }
- }
- const comp=$('#comparison-list');comp.replaceChildren();if(!r.ranked.length){showEmpty(comp,'暂无可比较报价。普通商品需要核对规格、对应价格和全部费用后才会进入排名。')}else{
- const wrap=el('div','ranking');r.ranked.forEach((x,i)=>{const row=el('div','rank');row.append(el('div','rank-num',i+1));const detail=el('div','rank-details');detail.append(el('strong','',x.title));detail.append(el('small','',PLATFORMS[x.platform].name+' · 启发式评分 '+x.score+' / 100 · 人工输入数据'));row.append(detail,el('div','rank-price',niceMoney(x.total)));wrap.append(row)});comp.append(wrap,el('div','ranking-footer','仅为已录入且符合核验条件的商品排序，非全网最低价，也非实时市场数据。'));
- }
-}
-function platformFields(){const val=$('#f-platform').value;$('#wholesale-fields').classList.toggle('hidden',val!=='wholesale');$('#account-fields').classList.toggle('hidden',val!=='pzds')}
-function formShow(yes){$('#candidate-form').classList.toggle('hidden',!yes);$('#form-error').textContent='';if(yes)$('#candidate-form').scrollIntoView({behavior:'smooth',block:'start'})}
-function onAdd(e){e.preventDefault();const f=e.currentTarget;const fd=new FormData(f);const x={
-  id:(globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random()}`).toString(),platform:fd.get('platform'),title:String(fd.get('title')||'').trim(),url:String(fd.get('url')||'').trim(),price:fd.get('price'),shipping:fd.get('shipping'),fees:fd.get('fees'),discount:fd.get('discount'),seller:fd.get('seller'),warranty:fd.get('warranty'),minQty:fd.get('minQty'),game:String(fd.get('game')||'').trim(),server:String(fd.get('server')||'').trim(),accountCode:String(fd.get('accountCode')||'').trim(),risk:fd.get('risk'),note:String(fd.get('note')||'').trim(),skuChecked:fd.has('skuChecked'),priceChecked:fd.has('priceChecked'),costChecked:fd.has('costChecked'),createdAt:new Date().toISOString()
- };
- const error=validCandidate(x);if(error){$('#form-error').textContent=error;return}
- if(state.items.length>=500){$('#form-error').textContent='最多保存500条候选，请先导出和清理';return}
- if(state.items.some(z=>z.platform===x.platform&&z.url===x.url)){$('#form-error').textContent='已存在同一平台的相同商品链接，请先核对原记录';return}
- state.items.push(x);persist();f.reset();platformFields();formShow(false);render();toast('已保存候选商品。资料只保存在当前浏览器。')
-}
-function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
-function collectFromCurrentPage(){
- try{
-  var originUrl=new URL(location.href),host=originUrl.hostname.toLowerCase();
-  function matches(domain){return host===domain||host.endsWith("."+domain)}
-  var domains=[["jd.com","jd"],["3.cn","jd"],["taobao.com","taobao"],["tmall.com","taobao"],["pinduoduo.com","pdd"],["yangkeduo.com","pdd"],["goofish.com","xianyu"],["2.taobao.com","xianyu"],["1688.com","wholesale"],["pzds.com","pzds"]];
-  var platform="";
-  for(var entry of domains){if(matches(entry[0])){platform=entry[1];break}}
-  if(originUrl.protocol!=="https:"||!platform){alert("请先打开支持的电商平台商品详情页面。");return}
-  var clean=new URL(originUrl.origin+originUrl.pathname);
-  for(var key of ["id","itemId","goodsId","goods_id","productId","offerId"]){
-   var value=originUrl.searchParams.get(key);
-   if(value&&/^[a-zA-Z0-9_-]{1,80}$/.test(value))clean.searchParams.set(key,value);
-  }
-  var og=document.querySelector('meta[property="og:title"]');
-  var title=((og&&og.content)||document.title||"未命名商品").replace(/\s+/g," ").slice(0,160);
-  if(!confirm("只将本页公开商品标题和商品链接预填进购物系统，仍须人工核对价格、规格和交易风险。是否继续？"))return;
-  var payload=encodeURIComponent(JSON.stringify({platform:platform,title:title,url:clean.href}));
-  window.open("https://tanzhi6269330-star.github.io/shopping-intelligence/#si-import="+payload,"_blank","noopener,noreferrer");
- }catch(e){alert("无法读取当前页面，请检查商品链接是否有效。")}
-}
-function importBookmarkletCandidate(){
- const h=location.hash||"";
- if(!h.startsWith("#si-import="))return;
- try{
-  if(h.length>5000)throw Error("导入数据过长");
-  const row=JSON.parse(decodeURIComponent(h.slice("#si-import=".length)));
-  if(!row||!PLATFORMS[row.platform]||typeof row.title!=="string"||typeof row.url!=="string"||!validPlatformUrl(row.url,row.platform))throw Error("无效的商品数据");
-  const f=$('#candidate-form');
-  f.elements.namedItem('platform').value=row.platform;
-  f.elements.namedItem('title').value=row.title.slice(0,160);
-  f.elements.namedItem('url').value=row.url.slice(0,2000);
-  platformFields();
-  formShow(true);
-  toast("已预填商品标题和链接。请核实标价、运费、规格及专项风险后再保存。");
- }catch(e){toast("书签导入失败：平台或数据格式不符合要求")}
- finally{history.replaceState(null,'',location.pathname+location.search)}
-}
-function setup(){hydrate();render();
- const bookmarklet=$('#shopping-bookmarklet');if(bookmarklet)bookmarklet.href='javascript:('+collectFromCurrentPage.toString()+')()';
- window.addEventListener('hashchange',importBookmarkletCandidate);
- importBookmarkletCandidate();['term','budget','category'].forEach(k=>$('#'+k).addEventListener('input',setNeeds));
- $('#toggle-form').addEventListener('click',()=>formShow(true));$('#close-form').addEventListener('click',()=>formShow(false));$('#candidate-form').addEventListener('submit',onAdd);$('#f-platform').addEventListener('change',platformFields);
- $('#export-json').addEventListener('click',()=>download('智能购物系统_候选备份.json',JSON.stringify(state,null,2),'application/json;charset=utf-8'));
- $('#export-csv').addEventListener('click',()=>download('智能购物系统_核验列表.csv',exportCsv(state.items,state.needs),'text/csv;charset=utf-8'));
- $('#import-json').addEventListener('change',async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;if(file.size>2000000){toast('备份文件超过2MB，拒绝导入');return}try{const payload=JSON.parse(await file.text());const clean=safeImport(payload);if(!clean){toast('无效备份：格式或商品记录不符合要求');return}if(!confirm(`导入 ${clean.items.length} 条候选？会覆盖当前浏览器已有数据。`))return;state={version:1,...clean};persist();hydrate();render();toast('已导入备份')}catch{toast('文件解析失败，请确认格式为有效 JSON')}});
- $('#clear-all').addEventListener('click',()=>{if(!confirm('确认清空本浏览器全部候选记录？此操作不可恢复，建议先导出备份。'))return;state=initial();persist();hydrate();render();toast('已清空')});
-}
-setup();
-
+function send(text){const t=String(text).trim().slice(0,600);if(!t)return;state.messages.push({role:"user",text:t});absorb(t);state.messages.push({role:"assistant",text:response()});state.messages=state.messages.slice(-60);try{localStorage.setItem(STORE,JSON.stringify(state))}catch{}draw()}
+el("#chat-form").addEventListener("submit",e=>{e.preventDefault();send(el("#message").value);el("#message").value=""});
+el("#message").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();el("#chat-form").requestSubmit()}});
+el("#reset").addEventListener("click",()=>{if(confirm("清空对话及购物条件？")){state=init();localStorage.removeItem(STORE);draw()}});
+draw();
 </script></body></html>
