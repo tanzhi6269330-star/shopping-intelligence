@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {makeState,update,nextQuestion,researchPlan,getCategory} from '../conversation/engine.mjs';
+test('预算口语解析和条件继承',()=>{let s=update(makeState(),'帮我找100元以内游戏耳机');assert.equal(s.category,'headphones');assert.equal(s.budget,100);s=update(s,'再便宜点');assert.equal(s.budget,70);assert.equal(s.category,'headphones');});
+test('无需品牌时跨品牌研究',()=>{let s=update(makeState(),'100元以内游戏耳机');const p=researchPlan(s);assert.ok(p.brands.length>=3);assert.ok(p.sources.length>=3);assert.ok(p.products.length>=4);});
+test('指定品牌时不擅自跨品牌',()=>{let s=update(makeState(),'帮我找耳机');s=update(s,'只要漫步者');assert.deepEqual(researchPlan(s).brands,['漫步者']);});
+test('二手与新品条件切换',()=>{let s=update(makeState(),'200元以内耳机');assert.equal(s.condition,'new');s=update(s,'闲鱼二手也可以');assert.equal(s.condition,'both');assert.ok(researchPlan(s).products.some(x=>x.name==='闲鱼'));s=update(s,'不考虑二手');assert.equal(s.condition,'new');});
+test('智能追问只要关键条件',()=>{let s=update(makeState(),'帮我找耳机');assert.equal(nextQuestion(s).key,'budget');s=update(s,'预算灵活');assert.equal(s.budget,-1);assert.equal(nextQuestion(s).key,'usage');s=update(s,'游戏语音');assert.equal(nextQuestion(s).key,'connection');});
+test('账号交易与普通耳机分开处理',()=>{const s=update(makeState(),'我想买一个王者荣耀账号');assert.equal(s.category,'game');assert.equal(researchPlan(s).brands.length,0);});
+test('复合条件保留',()=>{let s=update(makeState(),'帮我找200元以内键盘');s=update(s,'无线的');assert.equal(s.category,'keyboard');assert.equal(s.connection,'无线');assert.equal(s.budget,200);});
+test('不因为没有数据而伪造型号和实时价格',()=>{let s=update(makeState(),'50元以内耳机');const p=researchPlan(s);assert.equal('offers' in p,false);assert.equal('livePrices' in p,false);});
