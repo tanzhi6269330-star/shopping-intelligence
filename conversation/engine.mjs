@@ -38,7 +38,7 @@ export function update(state,text){
  if(/王者荣耀|和平精英/.test(t))s.game=t.match(/王者荣耀|和平精英/)[0];
  const cat=getCategory(t);
  const changesCategory=cat.key!=="general" && (!s.category || cat.key!==s.category);
- if(changesCategory){s.category=cat.key;s.query=cat.name;s.usage="";s.connection="";s.game=s.game||"";s.server=s.server||"";s.excludeBrand="";}
+ if(changesCategory){s.category=cat.key;s.query=cat.name;s.excludeBrand="";}
  else if(!s.category){s.category="general";s.query=t.slice(0,32)}
  else if(!s.query)s.query=cat.name;
  const d=CATEGORIES.find(x=>x.key===s.category)||CATEGORIES.at(-1);
