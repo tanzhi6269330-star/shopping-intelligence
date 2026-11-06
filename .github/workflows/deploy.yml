@@ -26,6 +26,8 @@ jobs:
         run: |
           mkdir -p dist
           cp index.html dist/index.html
+          cp legacy.html dist/legacy.html
+          cp -R conversation dist/conversation
           cp -R chat dist/chat
           cp -R classic dist/classic
           cp -R workos dist/workos
