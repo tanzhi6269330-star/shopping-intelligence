@@ -27,3 +27,9 @@ jobs:
         env:
           SHOPPING_SITE_URL: https://tanzhi6269330-star.github.io/shopping-intelligence/
         run: python tests/browser_smoke.py
+      - name: WorkOS 本地页面交互验收
+        run: python tests/workos_browser_smoke.py
+      - name: WorkOS 已发布网址交互验收
+        env:
+          SHOPPING_SITE_URL: https://tanzhi6269330-star.github.io/shopping-intelligence/
+        run: python tests/workos_browser_smoke.py
