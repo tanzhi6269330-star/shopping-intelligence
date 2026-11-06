@@ -16,7 +16,7 @@ opts.add_argument("--window-size=1366,900")
 driver = webdriver.Chrome(options=opts)
 try:
     wait = WebDriverWait(driver, 20)
-    driver.get(BASE)
+    driver.get(BASE.rstrip("/") + "/classic/")
     wait.until(lambda d: d.find_element(By.ID, "term"))
     assert "智能购物决策系统" in driver.title, driver.title
     for label in ("京东", "淘宝", "拼多多", "闲鱼", "1688", "盼之代售"):
@@ -65,7 +65,7 @@ try:
         "title": "真实页面导入测试标题",
         "url": "https://www.goofish.com/item?id=123456789"
     }, ensure_ascii=False), safe="")
-    driver.get(BASE + "#si-import=" + payload)
+    driver.get(BASE.rstrip("/") + "/classic/#si-import=" + payload)
     form = wait.until(lambda d: d.find_element(By.ID, "candidate-form"))
     wait.until(lambda d: form.is_displayed())
     assert form.find_element(By.CSS_SELECTOR, '[name="title"]').get_attribute("value") == "真实页面导入测试标题"
