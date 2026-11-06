@@ -1,0 +1,38 @@
+name: 对话推荐改造验收
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "chat/**"
+      - "classic/**"
+      - "tests/chat*"
+      - ".github/workflows/deploy.yml"
+      - ".github/workflows/chat-pr.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 运行所有静态和对话规则测试
+        run: node --test tests/*.test.mjs
+      - name: 安装 Python 和 Chrome WebDriver
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装 Selenium
+        run: python -m pip install selenium
+      - name: 启动本地静态站点
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/shop-chat.log 2>&1 &
+          sleep 2
+      - name: 对话引擎真实 Chrome 交互测试
+        run: python tests/chat_browser_smoke.py

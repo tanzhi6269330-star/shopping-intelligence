@@ -1,65 +1,130 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="对话式智能购物助手"><title>智能购物研究助手｜对话选购</title><style>
-:root{font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;color:#193441;background:#f5f8f9}*{box-sizing:border-box}body{margin:0}header{padding:20px 4%;background:#fff;border-bottom:1px solid #e2e9ed;display:flex;justify-content:space-between;align-items:center}header b{font-size:18px}header a,a{color:#087589}main{max-width:1100px;margin:25px auto;padding:0 18px}h1{font-size:clamp(25px,4vw,36px);margin:0 0 10px}p{line-height:1.65}h2{font-size:17px}.desc{color:#6d828d;margin:0 0 20px}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,1fr);gap:18px}.box{border:1px solid #e0e9ec;background:white;border-radius:16px;box-shadow:0 8px 20px #26455408}.chat{min-height:570px;display:flex;flex-direction:column}.history{padding:18px;flex:1;max-height:580px;min-height:340px;overflow:auto;display:flex;flex-direction:column;gap:12px}.msg{border-radius:13px;padding:13px;line-height:1.65;font-size:14px;white-space:pre-wrap;max-width:94%}.assistant{background:#edf5f6;align-self:flex-start}.user{background:#117b88;color:white;align-self:flex-end}.quick{padding:10px 15px;display:flex;flex-wrap:wrap;gap:6px}.chip{border:1px solid #d1dfe4;border-radius:999px;background:white;color:#456778;padding:7px 11px;font-size:12px;cursor:pointer}form{display:flex;padding:15px;gap:10px;border-top:1px solid #e9eff0}textarea{flex:1;min-height:57px;resize:vertical;border:1px solid #cedce1;border-radius:10px;padding:12px;font:inherit}button.send{background:#107889;border:0;color:white;border-radius:10px;font-weight:700;padding:0 20px;cursor:pointer}.side{display:flex;flex-direction:column;gap:15px}.side .box{padding:17px}.tag{font-size:12px;background:#ecf4f5;color:#356979;display:inline-block;border-radius:6px;margin:3px;padding:6px}.candidate{border:1px solid #e5eef0;border-radius:10px;padding:13px;margin:12px 0}.candidate strong{font-size:14px}.candidate p{font-size:12px;color:#607987;margin:7px 0}.candidate a{font-size:12px;margin-right:10px}.note{font-size:12px;color:#856729;background:#fff8e7;padding:13px;border-radius:9px;line-height:1.7}.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.links a{font-size:12px;background:#eef5f7;padding:7px 9px;border-radius:7px;text-decoration:none}.muted{font-size:12px;color:#738a96;line-height:1.6}.reset{background:#fff;border:1px solid #d3e0e5;border-radius:7px;padding:8px 10px;cursor:pointer;margin-top:10px}@media(max-width:780px){.layout{grid-template-columns:1fr}.history{max-height:480px}header{gap:12px;flex-wrap:wrap}}
-</style></head><body><header><b>智能购物研究助手</b><a href="./classic/">旧版商品核验台</a></header><main><h1>你说想买什么，我来逐步缩小范围。</h1><p class="desc">直接聊天，自动记住预算、用途、品牌和二手偏好；先研究值得买的型号，再寻找各平台报价。</p><div class="layout">
-<section class="box chat"><div id="history" class="history" aria-live="polite"></div><div id="quick" class="quick"></div><form id="chat-form"><textarea id="message" placeholder="例如：找个100元以内、带麦克风的游戏耳机" maxlength="600" aria-label="购物需求"></textarea><button type="submit" class="send">发送</button></form></section>
-<aside class="side"><div class="box"><h2>当前条件</h2><div id="constraints" class="muted">说一句购物需求即可开始。</div><button id="reset" class="reset" type="button">清空本轮对话</button></div><div class="box"><h2>品牌和型号推荐研究</h2><div id="picks" class="muted">开始对话后，根据评测证据显示型号候选。</div></div><div class="box"><h2>评测及跨平台搜索</h2><div class="note">当前为免费的基础对话原型：能保留条件、追问、展示有出处的部分型号建议，但尚未接入在线大模型及实时电商搜索。所有商品价格需另外核验，不会编造实时到手价。</div><div class="links" id="links"></div></div></aside></div><p class="muted">对话数据仅保存在当前浏览器。购物前请核对规格、到手价、售后；1688注意起订量、闲鱼注意成色、盼之注意实名换绑与找回风险。</p></main><script type="module">
-const el=x=>document.querySelector(x),STORE="shopping-chat-v1";
-const init=()=>({category:"",budget:null,brand:"",used:null,mic:null,wireless:null,purpose:"",platform:"",excluded:[],messages:[]});
-let state=init();try{const v=JSON.parse(localStorage.getItem(STORE)||"null");if(v&&Array.isArray(v.messages)&&v.messages.length<=60)state=Object.assign(init(),v)}catch{}
-const sources={
-rtings:{title:"RTINGS 2026年10月预算游戏耳机评测",url:"https://www.rtings.com/headphones/reviews/best/gaming-headsets-under-50"},
-toms:{title:"Tom's Hardware 2026年10月游戏耳机评测",url:"https://www.tomshardware.com/peripherals/gaming-headsets/best-gaming-headsets"}};
-const products=[
-{brand:"HyperX",model:"Cloud III 有线",note:"专业评测认可舒适性与基础游戏表现，需核验国内版本和售价。",src:["rtings","toms"]},
-{brand:"SteelSeries",model:"Arctis Nova 1",note:"入门有线游戏耳机，作为对照研究，需核验国内渠道和售后。",src:["toms"]},
-{brand:"Turtle Beach",model:"Atlas 200",note:"轻量化有线游戏耳机，国内在售与具体版本尚未确认。",src:["toms"]}];
-const brands={金士顿:"HyperX",赛睿:"SteelSeries",乌龟海岸:"Turtle Beach"};
-function node(tag,cl,txt){const x=document.createElement(tag);if(cl)x.className=cl;if(txt!==undefined)x.textContent=txt;return x}
-function anchor(name,url){const a=node("a","",name);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a}
-function typeOf(s){if(/耳机|耳麦|headset/i.test(s))return "耳机";if(/王者荣耀账号|游戏账号|代售账号/.test(s))return "游戏账号";if(/笔记本|电脑|主机/.test(s))return "电脑";if(/手机|平板/.test(s))return "手机";if(/键盘|鼠标/.test(s))return "外设";if(/洗衣机|冰箱|空调/.test(s))return "家电";return ""}
-function budgetOf(s){const m=s.match(/(?:预算|以内|低于|不超过|最多|上限|降到|便宜到|控制在)\s*(\d+(?:\.\d+)?)\s*(千|万|元|块)?|(\d+(?:\.\d+)?)\s*(千|万|元|块)\s*(?:左右|以内|以下|封顶)/);if(m){const n=Number(m[1]||m[3]);const unit=m[2]||m[4];const val=n*(unit==="千"?1000:unit==="万"?10000:1);if(val>0&&val<1e7)return val}const x=s.match(/(\d+(?:\.\d+)?)\s*(?:元|块)?\s*(?:以内|以下)/);if(x)return Number(x[1]);return null}
-function absorb(t){
- const cat=typeOf(t);if(cat)state.category=cat;
- const b=budgetOf(t);if(b!==null)state.budget=b;else if(/再便宜点|便宜点|降低预算/.test(t)&&state.budget)state.budget=Math.max(10,Math.round(state.budget*.75/10)*10);
- if(/不要二手|只要全新|不考虑二手|排除二手/.test(t))state.used=false;else if(/二手也行|接受二手|闲鱼也可以/.test(t))state.used=true;
- if(/不需要麦|不用麦|不要麦/.test(t))state.mic=false;else if(/麦克风|带麦|开黑|语音/.test(t))state.mic=true;
- if(/只要无线|必须无线|蓝牙连接/.test(t))state.wireless=true;else if(/有线就行|只要有线|不考虑无线/.test(t))state.wireless=false;
- if(/游戏|电竞|开黑/.test(t))state.purpose="游戏";else if(/听歌|音乐|通勤/.test(t))state.purpose="音乐/通勤";
- if(/不限品牌|其他品牌|换个品牌|品牌不限/.test(t))state.brand="";
- const m=t.match(/(?:只要|指定|优先|想看)(?:品牌)?\s*(HyperX|金士顿|雷蛇|Razer|Sony|索尼|华为|小米|赛睿|SteelSeries|Turtle Beach)/i);if(m)state.brand=brands[m[1]]||m[1];
- const ex=t.match(/(?:不要|排除)(HyperX|金士顿|雷蛇|Razer|索尼|华为|小米|赛睿|SteelSeries|Turtle Beach)/i);if(ex)state.excluded.push(brands[ex[1]]||ex[1]);
- const p=t.match(/闲鱼|1688|盼之代售|京东|淘宝|天猫|拼多多/);if(p)state.platform=p[0]==="天猫"?"淘宝":p[0];
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>智能购物决策系统 · 对话式选购</title>
+<meta name="description" content="用聊天筛选商品：先说需求，系统追问关键条件、提供有来源的型号研究候选和多平台搜索入口。">
+<style>
+:root{font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",system-ui,sans-serif;color:#183044;background:#f5f7fa;--blue:#122c43;--teal:#007c76;--muted:#637887;--line:#dfe7ec}
+*{box-sizing:border-box}body{margin:0;display:flex;min-height:100vh}button,input,textarea{font:inherit}button{cursor:pointer}
+aside{width:265px;background:#112b40;color:#e8f2f6;padding:26px 20px;display:flex;flex-direction:column;gap:22px;flex-shrink:0}
+.logo{font-weight:800;letter-spacing:.4px;font-size:19px;line-height:1.6}.logo span{display:block;font-size:11px;letter-spacing:1.4px;color:#86beb9;font-weight:500}
+aside .meta{font-size:12px;color:#a0b5c0;line-height:1.9}aside a{color:#aee6da;text-decoration:none}aside a:hover{text-decoration:underline}
+aside .line{border-top:1px solid #29475a;padding-top:17px}
+.mini-title{text-transform:uppercase;letter-spacing:1.2px;font-size:11px;color:#8fabb7;margin-bottom:12px}
+#summary span{display:inline-block;border:1px solid #386179;border-radius:9px;padding:5px 8px;font-size:11px;color:#e6f8f8;margin:0 5px 7px 0;max-width:210px;overflow-wrap:anywhere}
+.spacer{flex:1}.aside-button{border:1px solid #466878;background:transparent;color:#e1f0f2;padding:10px 13px;border-radius:10px;text-align:left;width:100%}
+main{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh}
+header{padding:17px 38px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px}
+header strong{font-size:15px}header small{color:var(--muted);display:block;margin-top:3px}
+.status{border:1px solid #d4e3e1;color:#366d68;border-radius:999px;font-size:11px;padding:7px 12px;background:#f1faf7}
+#messages{flex:1;overflow:auto;display:flex;flex-direction:column;gap:20px;padding:30px max(24px,calc((100% - 890px)/2)) 30px;scroll-behavior:smooth}
+.message{max-width:90%;border-radius:16px;padding:16px 18px;font-size:14px;line-height:1.8;white-space:pre-wrap;box-shadow:0 2px 12px rgba(18,44,67,.035)}
+.message.user{margin-left:auto;background:#d7f0ea;color:#123e37;white-space:pre-wrap}
+.message.assistant{margin-right:auto;background:#fff;border:1px solid var(--line);max-width:100%}
+.message .speaker{color:#0b726a;font-size:11px;letter-spacing:.8px;font-weight:700;margin-bottom:9px}
+.message .intro-text{white-space:pre-wrap;line-height:1.9}
+.suggestions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.suggestions button,.example button{border:1px solid #c4dbd6;border-radius:999px;padding:7px 12px;background:#f3fbf8;color:#176a62;font-size:12px}
+.suggestions button:hover,.example button:hover{background:#d7f2e9}
+.candidates{display:grid;gap:9px;margin-top:14px}.candidate{border:1px solid #e2eaf0;background:#f9fbfd;border-radius:12px;padding:13px}
+.candidate h3{font-size:14px;margin:0;color:#20364b}.candidate p{font-size:12px;color:#516b7b;margin:6px 0}
+.candidate .pill{font-size:11px;color:#04766e;margin-top:6px;font-weight:600}
+.candidate a,.results a{color:#087b73;text-decoration:none;font-size:12px;margin-right:10px}
+.candidate a:hover,.results a:hover{text-decoration:underline}
+.results{margin-top:13px;border-top:1px dashed #d2dfe5;padding-top:10px}
+.results summary{cursor:pointer;font-size:12px;font-weight:700;color:#3c6071}
+.results .links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 4px}
+.results a{border:1px solid #e2ebe9;padding:8px 10px;border-radius:8px;background:#fff}
+.hint{font-size:11px;color:#7d909b;margin-top:12px}
+.hero{max-width:820px;margin:5vh auto 0;text-align:center;padding:0 12px}.hero h1{font-size:27px;color:#1c3447;margin:0 0 9px}.hero p{color:#738692;font-size:13px;line-height:1.9;margin:0}
+.example{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:22px auto 0}
+footer{background:#fff;border-top:1px solid var(--line);padding:14px max(24px,calc((100% - 890px)/2)) 17px}
+.composer{display:flex;align-items:flex-end;gap:12px;border:1px solid #cfdde3;border-radius:14px;padding:11px 11px 11px 17px;box-shadow:0 4px 15px rgba(40,68,79,.06)}
+textarea{flex:1;border:0;resize:none;outline:0;min-width:0;min-height:39px;max-height:110px;font-size:14px;line-height:1.7;background:transparent}
+#send{border:0;background:var(--teal);color:#fff;border-radius:10px;font-weight:700;padding:10px 20px;white-space:nowrap}
+footer .fine{font-size:11px;color:#8a9ca6;margin-top:8px;line-height:1.7;text-align:center}
+@media(max-width:800px){aside{display:none}header{padding:13px 18px}#messages{padding:20px 15px}.message{max-width:96%}footer{padding:12px}.results .links{grid-template-columns:1fr}.hero{margin-top:2vh}.hero h1{font-size:22px}.status{font-size:10px;padding:5px 7px}}
+</style></head><body>
+<aside>
+<div class="logo">醒醒 · 智能购物<span>SHOPPING INTELLIGENCE V0.7</span></div>
+<div><div class="mini-title">对话式选购</div><div class="meta">随口描述需要买什么。系统只追问真正影响推荐的条件，自动继承前文预算、用途和偏好。</div></div>
+<div class="line"><div class="mini-title">当前需求</div><div id="summary"><span>等待你提出购物需求</span></div></div>
+<div class="line"><div class="mini-title">可用平台与信息源</div><div class="meta">京东、淘宝、拼多多、1688、闲鱼、盼之代售；支持打开平台搜索、评测和社区来源。</div></div>
+<div class="spacer"></div>
+<div class="line"><button class="aside-button" id="reset" type="button">＋ 开始新的购物需求</button></div>
+<div class="meta">当前是可检验的对话规则引擎；尚未接通全平台实时自动采集、云端大模型和购买接口。</div>
+<div><a href="./classic/">打开旧版人工核验工作台</a></div>
+</aside>
+<main><header><div><strong>对话式购物研究助手</strong><small>先发现型号，再查评测，最后寻找可靠购买渠道</small></div><span class="status">来源优先 · 不编造价格</span></header>
+<div id="messages" aria-live="polite">
+<div class="hero" id="welcome">
+<h1>你想买什么？直接告诉我。</h1>
+<p>不用填表。可以说“帮我找百元以内带麦的游戏耳机”，或“想买性价比高的手机”。<br>我会记住条件、追问关键细节，并给出有公开来源的研究候选。</p>
+<div class="example" id="examples">
+<button type="button" data-prompt="帮我找100元以内带麦克风的游戏耳机">100元以内游戏耳机</button>
+<button type="button" data-prompt="想买一个性价比高的无线鼠标">性价比高的无线鼠标</button>
+<button type="button" data-prompt="帮我找王者荣耀账号">王者荣耀账号</button>
+</div>
+</div></div>
+<footer><div class="composer"><textarea id="prompt" rows="2" maxlength="700" aria-label="输入购物需求" placeholder="例如：优先100元以内，要有麦，别推荐雷柏……"></textarea><button id="send" type="button">发送</button></div><div class="fine">本地保存对话。商品研究候选≠实时到手价或已核验购买推荐；交易风险需独立确认。</div></footer></main>
+<script type="module">
+import {initialState,reply} from "./chat/recommendation.mjs";
+const KEY="shopping_conversation_v07";
+const $=(id)=>document.getElementById(id);
+const element=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=String(txt);return e};
+let app={state:initialState(),thread:[]};
+try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(raw&&Array.isArray(raw.thread)&&raw.thread.length<=80&&raw.state&&typeof raw.state==="object")app=raw;}catch{}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(app))}catch{}}
+function outbound(url){try{const u=new URL(url);return u.protocol==="https:"?u.href:null}catch{return null}}
+function addLink(box,label,url){const safe=outbound(url);if(!safe)return;const a=element("a","",label);a.href=safe;a.target="_blank";a.rel="noopener noreferrer";box.append(a)}
+function showMessage(turn){
+const div=element("article","message "+(turn.role==="user"?"user":"assistant"));
+if(turn.role==="user"){div.textContent=turn.text;return div;}
+div.append(element("div","speaker","购物研究助手"));
+div.append(element("div","intro-text",turn.output.message));
+if(turn.output.cards?.length){
+ const wrap=element("div","candidates");
+ for(const c of turn.output.cards){
+   const card=element("div","candidate");
+   card.append(element("h3","",c.brand+" · "+c.model));
+   card.append(element("p","",c.priceReference));
+   card.append(element("p","",c.budgetNotice||"当前预算匹配情况待核验"));
+   card.append(element("p","",c.caveat));
+   card.append(element("div","pill","资料优先级："+c.score+"分 · 不是购买排名"));
+   const sc=element("div");for(const src of c.refs)addLink(sc,"来源："+src.label,src.url);card.append(sc);
+   wrap.append(card);
+ }
+ div.append(wrap);
 }
-function candidates(){
- if(state.category!=="耳机"||state.wireless===true)return [];
- return products.filter(p=>(!state.brand||p.brand.toLowerCase()===state.brand.toLowerCase())&&!state.excluded.some(x=>p.brand.toLowerCase()===x.toLowerCase()));
+if(turn.output.links?.length){
+ const det=element("details","results");det.append(element("summary","","查看评测、榜单与六平台检索入口（"+turn.output.links.length+"个，非已抓取结果）"));
+ const links=element("div","links");
+ for(const link of turn.output.links)addLink(links,link.label+" ↗",link.url);
+ det.append(links);div.append(det);
 }
-function question(){
- if(!state.category)return "你想买什么？可以直接描述用途和预算。";
- if(state.category==="耳机"){if(!state.purpose)return "主要打游戏还是听歌通勤？";if(state.budget===null)return "预算大概多少？例如50元以内、100元左右。";if(state.mic===null)return "需要麦克风进行语音通话吗？";if(state.wireless===null)return "需要无线，还是有线也可以？"}
- if(state.category==="游戏账号")return "先确认游戏、区服、预算和看重的皮肤/等级，再独立核验实名与换绑风险。";
- if(state.budget===null)return "预算大概多少？";return "有什么必须具备或无法接受的功能吗？";
+if(turn.output.options?.length){const sug=element("div","suggestions");for(const o of turn.output.options){const b=element("button","",o);b.type="button";b.addEventListener("click",()=>submit(o));sug.append(b);}div.append(sug);}
+div.append(element("div","hint","说明："+turn.output.status+"。不提供未经核验的实时价格。"));
+return div;
 }
-function response(){
- const picks=candidates();let msg="";
- if(state.category==="耳机"&&picks.length){msg="当前可参考的专业评测型号："+picks.map(x=>x.brand+" "+x.model).join("、")+"。它们仅是研究候选，不代表适合你在国内的预算或已找到商品现价。评测出处见右侧。";}
- else if(state.category==="耳机"&&state.wireless===true)msg="你要求无线，已排除已有的有线评测候选；待检索新的无线产品证据，不会硬凑推荐。";
- else msg="条件已记住。当前这一品类尚无经过审核的型号证据库，会保留检索入口而不会编造高性价比品牌排名。";
- return msg+"\n\n"+question();
+function rerender(){
+const messages=$("messages");messages.replaceChildren();
+if(!app.thread.length){const hero=element("div","hero");hero.id="welcome";const h=element("h1","","你想买什么？直接告诉我。");const p=element("p","","不用填表：说商品、预算和用途，我会继续追问。当前是有来源的研究预览，实时全网采集尚待接入。");hero.append(h,p);const examples=element("div","example");
+for(const x of ["帮我找100元以内带麦克风的游戏耳机","想买一个性价比高的无线鼠标","帮我找王者荣耀账号"]){const b=element("button","",x);b.type="button";b.addEventListener("click",()=>submit(x));examples.append(b);}hero.append(examples);messages.append(hero);}
+else for(const t of app.thread)messages.append(showMessage(t));
+messages.scrollTop=messages.scrollHeight;
+const box=$("summary");box.replaceChildren();
+const last=app.thread.length?app.thread[app.thread.length-1].output:null;
+for(const t of (last?.tags||["等待你提出购物需求"]))box.append(element("span","",t));
 }
-function search(platform,q){const x=encodeURIComponent(q);if(platform==="京东")return "https://search.jd.com/Search?keyword="+x;if(platform==="淘宝")return "https://s.taobao.com/search?q="+x;if(platform==="闲鱼")return "https://www.goofish.com/search?q="+x;if(platform==="1688")return "https://www.1688.com/";if(platform==="拼多多")return "https://www.pinduoduo.com/";return "https://www.pzds.com/"}
-function draw(){
- const hist=el("#history");hist.replaceChildren();if(!state.messages.length)hist.append(node("div","msg assistant","你好。随口说说你想买什么，例如“帮我找一个100元以内、带麦克风的游戏耳机”。我会自动提炼条件，并询问会影响结果的关键细节。"));
- for(const m of state.messages)hist.append(node("div","msg "+m.role,m.text));hist.scrollTop=hist.scrollHeight;
- const c=el("#constraints");c.replaceChildren();if(!state.category)c.textContent="尚未开始。";
- else{const info=[["品类",state.category],["预算",state.budget===null?"不限":"¥"+state.budget],["用途",state.purpose||"待确认"],["麦克风",state.mic===null?"待确认":state.mic?"需要":"不需要"],["连接",state.wireless===null?"未限定":state.wireless?"无线":"有线"],["二手",state.used===null?"未限定":state.used?"允许":"排除"],["品牌",state.brand||"不指定"],["平台",state.platform||"不限"]];for(const [k,v] of info)c.append(node("span","tag",k+"："+v))}
- const p=el("#picks");p.replaceChildren();const opts=candidates();if(!opts.length)p.append(node("p","muted","目前没有符合条件的已审核型号。对其他品类将先寻找真实评测，不输出虚构榜单。"));else{for(const item of opts){const box=node("div","candidate");box.append(node("strong","",item.brand+" "+item.model),node("p","",item.note));for(const source of item.src)box.append(anchor("评测："+sources[source].title,sources[source].url));p.append(box)}p.append(node("p","muted","评测型号不代表国内价格、SKU或购买渠道已经核验。"))}
- const links=el("#links");links.replaceChildren();if(state.category){const q=(opts.length?opts[0].brand+" "+opts[0].model:state.category);links.append(anchor("更多评测","https://www.bing.com/search?q="+encodeURIComponent(q+" 测评 横评 性价比")));for(const name of ["京东","淘宝","拼多多","1688","闲鱼","盼之代售"])if(!state.platform||name===state.platform)links.append(anchor(name+"搜索",search(name,q)))}
- const quick=el("#quick");quick.replaceChildren();for(const t of (state.category?["再便宜点","不要二手","看看其他品牌","只要无线"]:["百元内带麦游戏耳机","找一款高性价比电脑","想买王者荣耀账号"])){const b=node("button","chip",t);b.type="button";b.addEventListener("click",()=>send(t));quick.append(b)}
+function submit(value){
+const prompt=String(value||"").trim();if(!prompt)return;
+const result=reply(app.state,prompt);
+app.state=result.state;app.thread.push({role:"user",text:prompt},{role:"assistant",output:result.output});
+app.thread=app.thread.slice(-40);
+save();$("prompt").value="";rerender();
 }
-function send(text){const t=String(text).trim().slice(0,600);if(!t)return;state.messages.push({role:"user",text:t});absorb(t);state.messages.push({role:"assistant",text:response()});state.messages=state.messages.slice(-60);try{localStorage.setItem(STORE,JSON.stringify(state))}catch{}draw()}
-el("#chat-form").addEventListener("submit",e=>{e.preventDefault();send(el("#message").value);el("#message").value=""});
-el("#message").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();el("#chat-form").requestSubmit()}});
-el("#reset").addEventListener("click",()=>{if(confirm("清空对话及购物条件？")){state=init();localStorage.removeItem(STORE);draw()}});
-draw();
-</script></body></html>
+$("send").addEventListener("click",()=>submit($("prompt").value));
+$("prompt").addEventListener("keydown",(e)=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();submit($("prompt").value)}});
+$("reset").addEventListener("click",()=>{if(confirm("重新开始一项购物研究？只清空当前对话，旧版人工候选不受影响。")){app={state:initialState(),thread:[]};save();rerender();}});
+rerender();
+</script>
+</body></html>
