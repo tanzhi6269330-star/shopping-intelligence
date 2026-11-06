@@ -34,7 +34,7 @@ header strong{font-size:15px}header small{color:var(--muted);display:block;margi
 .results summary{cursor:pointer;font-size:12px;font-weight:700;color:#3c6071}
 .results .links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0 4px}
 .results a{border:1px solid #e2ebe9;padding:8px 10px;border-radius:8px;background:#fff}
-.hint{font-size:11px;color:#7d909b;margin-top:12px}
+.hint{font-size:11px;color:#7d909b;margin-top:12px}.live-result{margin-top:15px;padding:13px;background:#f2f9f7;border:1px solid #d5e8e2;border-radius:12px}.live-result strong{font-size:13px;color:#17645c}.live-card{padding:11px 0;border-top:1px solid #dcece8;margin-top:9px}.live-card a{display:block;font-size:13px;color:#087b73;overflow-wrap:anywhere}.live-card p{font-size:12px;color:#5d7480;line-height:1.6;margin:5px 0}.live-card small{color:#8a6846;font-size:11px;display:block}.live-meta{font-size:11px;color:#667f7b;margin-top:5px}
 .hero{max-width:820px;margin:5vh auto 0;text-align:center;padding:0 12px}.hero h1{font-size:27px;color:#1c3447;margin:0 0 9px}.hero p{color:#738692;font-size:13px;line-height:1.9;margin:0}
 .example{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:22px auto 0}
 footer{background:#fff;border-top:1px solid var(--line);padding:14px max(24px,calc((100% - 890px)/2)) 17px}
@@ -51,10 +51,10 @@ footer .fine{font-size:11px;color:#8a9ca6;margin-top:8px;line-height:1.7;text-al
 <div class="line"><div class="mini-title">可用平台与信息源</div><div class="meta">京东、淘宝、拼多多、1688、闲鱼、盼之代售；支持打开平台搜索、评测和社区来源。</div></div>
 <div class="spacer"></div>
 <div class="line"><button class="aside-button" id="reset" type="button">＋ 开始新的购物需求</button></div>
-<div class="meta">当前是可检验的对话规则引擎；尚未接通全平台实时自动采集、云端大模型和购买接口。</div>
+<div class="meta">可自动搜索公开评测网页（无密钥共享限额）；目前无云端大模型和六平台实时商品核价。不要输入账号或付款隐私。</div>
 <div><a href="./classic/">打开旧版人工核验工作台</a></div>
 </aside>
-<main><header><div><strong>对话式购物研究助手</strong><small>先发现型号，再查评测，最后寻找可靠购买渠道</small></div><span class="status">来源优先 · 不编造价格</span></header>
+<main><header><div><strong>对话式购物研究助手</strong><small>先发现型号，再查评测，最后寻找可靠购买渠道</small></div><span class="status">免费评测搜索 · 不编造价格</span></header>
 <div id="messages" aria-live="polite">
 <div class="hero" id="welcome">
 <h1>你想买什么？直接告诉我。</h1>
@@ -65,9 +65,10 @@ footer .fine{font-size:11px;color:#8a9ca6;margin-top:8px;line-height:1.7;text-al
 <button type="button" data-prompt="帮我找王者荣耀账号">王者荣耀账号</button>
 </div>
 </div></div>
-<footer><div class="composer"><textarea id="prompt" rows="2" maxlength="700" aria-label="输入购物需求" placeholder="例如：优先100元以内，要有麦，别推荐雷柏……"></textarea><button id="send" type="button">发送</button></div><div class="fine">本地保存对话。商品研究候选≠实时到手价或已核验购买推荐；交易风险需独立确认。</div></footer></main>
+<footer><div class="composer"><textarea id="prompt" rows="2" maxlength="700" aria-label="输入购物需求" placeholder="例如：优先100元以内，要有麦，别推荐雷柏……"></textarea><button id="send" type="button">发送</button></div><div class="fine">本地保存对话。符合条件后会把品类、预算、用途等检索词发送给第三方 Tavily 公共搜索；不会发送聊天全文。共享额度可能限制访问。评测来源≠已核验价格。</div></footer></main>
 <script type="module">
 import {initialState,reply} from "./chat/recommendation.mjs";
+import {reviewQuery,fetchReviews,SEARCH_LIMIT} from "./chat/live-search.mjs";
 const KEY="shopping_conversation_v07";
 const $=(id)=>document.getElementById(id);
 const element=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=String(txt);return e};
@@ -76,11 +77,44 @@ try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(raw&&Array.isArra
 function save(){try{localStorage.setItem(KEY,JSON.stringify(app))}catch{}}
 function outbound(url){try{const u=new URL(url);return u.protocol==="https:"?u.href:null}catch{return null}}
 function addLink(box,label,url){const safe=outbound(url);if(!safe)return;const a=element("a","",label);a.href=safe;a.target="_blank";a.rel="noopener noreferrer";box.append(a)}
+const researchCache=new Map();
+let activeSearches=0;
+const seenQueries=new Set();
+async function automaticReviewSearch(turn,state){
+ const q=reviewQuery(state);
+ if(!q||turn?.role!=="assistant"||turn.output?.question||window.__SHOPPING_DISABLE_LIVE__)return;
+ if(researchCache.has(q)){turn.output.live=researchCache.get(q);save();rerender();return;}
+ if(seenQueries.has(q))return;
+ if(activeSearches>=SEARCH_LIMIT){turn.output.live={state:"limit",message:"本页会话已经执行"+SEARCH_LIMIT+"次免费搜索。请刷新页面开始新的研究，或使用下方外部检索入口。",results:[]};save();rerender();return;}
+ seenQueries.add(q);
+ activeSearches++;
+ turn.output.live={state:"loading",message:"正在搜索公开评测和真实用户讨论……",results:[]};
+ save();rerender();
+ const data=await fetchReviews(q);
+ researchCache.set(q,data);
+ if(!app.thread.includes(turn))return;
+ turn.output.live=data;
+ save();rerender();
+}
 function showMessage(turn){
 const div=element("article","message "+(turn.role==="user"?"user":"assistant"));
 if(turn.role==="user"){div.textContent=turn.text;return div;}
 div.append(element("div","speaker","购物研究助手"));
 div.append(element("div","intro-text",turn.output.message));
+if(turn.output.live){
+ const live=turn.output.live, panel=element("section","live-result");
+ panel.append(element("strong","",live.state==="loading"?"正在联网检索":"公开评测搜索 · 未核验来源"));
+ panel.append(element("p","live-meta",live.message));
+ for(const src of (live.results||[])){
+   const box=element("div","live-card");
+   addLink(box,src.title||"无标题来源",src.url);
+   box.append(element("p","",String(src.excerpt||"").slice(0,220)));
+   box.append(element("small","",src.classification+" · "+src.reviewPriority));
+   if(src.flags?.length)box.append(element("small","",src.flags.join("；")));
+   panel.append(box);
+ }
+ div.append(panel);
+}
 if(turn.output.cards?.length){
  const wrap=element("div","candidates");
  for(const c of turn.output.cards){
@@ -118,9 +152,12 @@ for(const t of (last?.tags||["等待你提出购物需求"]))box.append(element(
 function submit(value){
 const prompt=String(value||"").trim();if(!prompt)return;
 const result=reply(app.state,prompt);
-app.state=result.state;app.thread.push({role:"user",text:prompt},{role:"assistant",output:result.output});
+app.state=result.state;
+const assistantTurn={role:"assistant",output:result.output};
+app.thread.push({role:"user",text:prompt},assistantTurn);
 app.thread=app.thread.slice(-40);
 save();$("prompt").value="";rerender();
+void automaticReviewSearch(assistantTurn,{...result.state});
 }
 $("send").addEventListener("click",()=>submit($("prompt").value));
 $("prompt").addEventListener("keydown",(e)=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();submit($("prompt").value)}});
