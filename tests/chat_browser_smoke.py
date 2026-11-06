@@ -13,6 +13,7 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--window-size=1380,900")
 driver = webdriver.Chrome(options=options)
+driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source":"window.__SHOPPING_DISABLE_LIVE__ = true;"})
 wait = WebDriverWait(driver,20)
 
 def send(text):
