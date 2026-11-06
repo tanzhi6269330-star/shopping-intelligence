@@ -234,6 +234,7 @@ function importBookmarkletCandidate(){
 }
 function setup(){hydrate();render();
  const bookmarklet=$('#shopping-bookmarklet');if(bookmarklet)bookmarklet.href='javascript:('+collectFromCurrentPage.toString()+')()';
+ window.addEventListener('hashchange',importBookmarkletCandidate);
  importBookmarkletCandidate();['term','budget','category'].forEach(k=>$('#'+k).addEventListener('input',setNeeds));
  $('#toggle-form').addEventListener('click',()=>formShow(true));$('#close-form').addEventListener('click',()=>formShow(false));$('#candidate-form').addEventListener('submit',onAdd);$('#f-platform').addEventListener('change',platformFields);
  $('#export-json').addEventListener('click',()=>download('智能购物系统_候选备份.json',JSON.stringify(state,null,2),'application/json;charset=utf-8'));
