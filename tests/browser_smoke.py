@@ -50,5 +50,25 @@ try:
     driver.refresh()
     wait.until(lambda d: "测试耳机A" in d.find_element(By.ID, "candidates-list").text)
     print("通过：中文页面、六平台、1688/盼之专项字段、商品录入和刷新后保留")
+
+    # 第28—29步：用户在商品页主动触发书签后，页面只预填字段、不自动确认价格。
+    import json
+    from urllib.parse import quote
+    payload = quote(json.dumps({
+        "platform": "xianyu",
+        "title": "真实页面导入测试标题",
+        "url": "https://www.goofish.com/item?id=123456789"
+    }, ensure_ascii=False), safe="")
+    driver.get(BASE + "#si-import=" + payload)
+    form = wait.until(lambda d: d.find_element(By.ID, "candidate-form"))
+    wait.until(lambda d: form.is_displayed())
+    assert form.find_element(By.CSS_SELECTOR, '[name="title"]').get_attribute("value") == "真实页面导入测试标题"
+    assert form.find_element(By.CSS_SELECTOR, '[name="url"]').get_attribute("value") == "https://www.goofish.com/item?id=123456789"
+    assert Select(form.find_element(By.CSS_SELECTOR, '[name="platform"]')).first_selected_option.get_attribute("value") == "xianyu"
+    assert form.find_element(By.CSS_SELECTOR, '[name="price"]').get_attribute("value") == "", "未知价格不能自动填入"
+    assert "#si-import=" not in driver.current_url, "导入信息须从地址栏清除"
+    link = driver.find_element(By.ID, "shopping-bookmarklet").get_attribute("href")
+    assert link.startswith("javascript:"), "缺少可拖动书签"
+    print("通过：书签商品导入只预填平台/标题/链接，未知价格为空且清除地址片段")
 finally:
     driver.quit()
