@@ -54,7 +54,7 @@ footer .fine{font-size:11px;color:#8a9ca6;margin-top:8px;line-height:1.7;text-al
 <div class="meta">可自动搜索公开评测网页（无密钥共享限额）；目前无云端大模型和六平台实时商品核价。不要输入账号或付款隐私。</div>
 <div><a href="./classic/">打开旧版人工核验工作台</a></div>
 </aside>
-<main><header><div><strong>对话式购物研究助手</strong><small>先发现型号，再查评测，最后寻找可靠购买渠道</small></div><span class="status">免费真实评测搜索 · 非电商实时报价</span></header>
+<main><header><div><strong>对话式购物研究助手</strong><small>先发现型号，再查评测，最后寻找可靠购买渠道</small></div><span class="status">免费评测搜索 · 不编造价格</span></header>
 <div id="messages" aria-live="polite">
 <div class="hero" id="welcome">
 <h1>你想买什么？直接告诉我。</h1>
@@ -82,7 +82,7 @@ let activeSearches=0;
 const seenQueries=new Set();
 async function automaticReviewSearch(turn,state){
  const q=reviewQuery(state);
- if(!q||turn?.role!=="assistant"||turn.output?.question)return;
+ if(!q||turn?.role!=="assistant"||turn.output?.question||window.__SHOPPING_DISABLE_LIVE__)return;
  if(researchCache.has(q)){turn.output.live=researchCache.get(q);save();rerender();return;}
  if(seenQueries.has(q))return;
  if(activeSearches>=SEARCH_LIMIT){turn.output.live={state:"limit",message:"本页会话已经执行"+SEARCH_LIMIT+"次免费搜索。请刷新页面开始新的研究，或使用下方外部检索入口。",results:[]};save();rerender();return;}
