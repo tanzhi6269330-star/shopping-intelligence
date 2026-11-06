@@ -1,16 +1,20 @@
 name: 在线网页浏览器验收
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: ["测试并发布中文购物网站"]
+    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   browser-smoke:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: 检出网站代码
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: 安装 Python
         uses: actions/setup-python@v5
         with:
