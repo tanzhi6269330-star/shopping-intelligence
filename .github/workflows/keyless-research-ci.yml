@@ -1,10 +1,6 @@
 name: 无密钥网页搜索可行性实验
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "research/keyless_probe.py"
-      - ".github/workflows/keyless-research-ci.yml"
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
