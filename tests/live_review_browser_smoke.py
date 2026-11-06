@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """用真实Chrome和可控响应验证聊天自动搜索渲染；不消耗第三方公共搜索额度。"""
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -27,7 +28,7 @@ try:
  };
 })();
 """})
-    driver.get("http://127.0.0.1:8765/")
+    driver.get(os.environ.get("SHOPPING_SITE_URL","http://127.0.0.1:8765/"))
     wait=WebDriverWait(driver,16)
     prompt=wait.until(lambda d:d.find_element(By.ID,"prompt"))
     prompt.send_keys("帮我找100元以内带麦的游戏耳机")
