@@ -6,7 +6,7 @@
 <aside class="sidebar"><div class="brand">◈ 购物研究助手</div><div class="sub">需求探索 · 高性价比研究 · 购物渠道</div><div class="nav">对话式购物研究</div><div class="sideitem">当前条件</div><div id="summary" class="focus">还没有购物需求</div><div class="sp"><button class="clear" id="reset">开始新一轮购物</button></div><div class="sidebottom">免费网页研究原型<br>不自动下单 · 不编造价格<br><a href="./classic/">打开旧版商品管理台</a></div></aside>
 <div class="main"><header class="top"><strong>想买什么？直接告诉我。</strong><span class="status">V0.7 · 证据推荐试验版</span></header>
 <div class="messages" id="messages"><div class="welcome"><h1>先帮你挑对，再帮你找便宜。</h1><p>说出一个商品需求，我会逐步确定预算、用途与重要细节；推荐值得研究的品牌和型号方向，同时提供专业评测、用户口碑及各平台的搜索入口。</p><div class="examples"><button class="chip" data-example="帮我挑100元以内带麦克风的游戏耳机">100元以内游戏耳机</button><button class="chip" data-example="帮我找一台性价比高的洗衣机">性价比洗衣机</button><button class="chip" data-example="我想买个王者荣耀账号">王者荣耀账号</button></div></div></div>
-<form class="composer" id="chat-form"><div class="composerbox"><input id="prompt" maxlength="500" placeholder="例如：找一款200元以内适合游戏的耳机" autocomplete="off" aria-label="输入购物需求"><button class="primary" id="send" type="submit">发送</button></div><div class="footnote">当前为规则驱动的对话原型：根据真实评测证据提出型号研究候选，但不编造价格或声称全平台实时搜索已接通；对话仅保存在本机浏览器。</div></form></div></div>
+<form class="composer" id="chat-form"><div class="composerbox"><input id="prompt" maxlength="500" placeholder="例如：找一款200元以内适合游戏的耳机" autocomplete="off" aria-label="输入购物需求"><button class="primary" id="send" type="submit">发送</button></div><div class="footnote">当前为规则驱动的对话原型：根据真实评测证据提出型号研究候选，但不编造价格或声称全平台实时搜索已接通。支持研究渠道：京东、淘宝、拼多多、闲鱼、1688、盼之代售。对话仅保存在本机浏览器。</div></form></div></div>
 <script type="module">
 import {initialState,reply} from "./chat/recommendation.mjs";
 const STATE_KEY="shopping_research_chat_v07";
