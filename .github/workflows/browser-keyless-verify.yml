@@ -1,10 +1,6 @@
 name: 免费浏览器联网评测试验
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "tests/browser_keyless_probe.py"
-      - ".github/workflows/browser-keyless-verify.yml"
+  workflow_dispatch:
   workflow_dispatch:
 permissions:
   contents: read
