@@ -26,6 +26,7 @@ jobs:
         run: |
           mkdir -p dist
           cp index.html dist/index.html
+          cp -R workos dist/workos
           touch dist/.nojekyll
       - name: 配置 GitHub Pages
         uses: actions/configure-pages@v5
