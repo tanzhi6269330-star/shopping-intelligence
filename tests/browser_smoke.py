@@ -24,7 +24,10 @@ try:
 
     driver.find_element(By.ID, "term").send_keys("百元带麦游戏耳机")
     driver.find_element(By.ID, "budget").send_keys("100")
-    driver.find_element(By.ID, "toggle-form").click()
+    add_button = driver.find_element(By.ID, "toggle-form")
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", add_button)
+    time.sleep(0.3)
+    add_button.click()
     wait.until(lambda d: d.find_element(By.ID, "candidate-form").is_displayed())
 
     selector = Select(driver.find_element(By.ID, "f-platform"))
