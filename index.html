@@ -46,8 +46,8 @@ export function searchUrl(platform,word){
  const urls={
  jd:`https://search.jd.com/Search?keyword=${q}`,
  taobao:`https://s.taobao.com/search?q=${q}`,
- xianyu:`https://www.goofish.com/search?keyword=${q}`,
- wholesale:`https://s.1688.com/selloffer/offer_search.htm?keywords=${q}`,
+ xianyu:`https://www.goofish.com/search?q=${q}`,
+ wholesale:'https://www.1688.com/',
  pdd:'https://www.pinduoduo.com/',
  pzds:'https://www.pzds.com/'
  };
@@ -159,7 +159,7 @@ function hydrate(){['term','budget','category'].forEach(k=>$('#'+k).value=state.
 const niceMoney=n=>Number.isFinite(n)?'¥'+n.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}):'待核验';
 const color={jd:'#d9363e',taobao:'#f07639',pdd:'#ec5a54',xianyu:'#f8a23a',wholesale:'#d96b1d',pzds:'#5271a8'};
 const iconText={jd:'京',taobao:'淘',pdd:'拼',xianyu:'闲',wholesale:'批',pzds:'盼'};
-const sub={jd:'品牌新品 · 公开搜索入口',taobao:'淘宝 / 天猫 · 公开搜索入口',pdd:'打开官网 · 站内自行搜索',xianyu:'二手商品 · 逐件核对',wholesale:'起订量 · 阶梯价格核验',pzds:'进入官网 · 选择游戏后搜索'};
+const sub={jd:'品牌新品 · 公开搜索入口',taobao:'淘宝 / 天猫 · 公开搜索入口',pdd:'打开官网 · 站内自行搜索',xianyu:'二手商品 · 逐件核对',wholesale:'打开官网后站内搜索 · 核起订量与阶梯价',pzds:'进入官网 · 选择游戏后搜索'};
 function renderPlatforms(){const holder=$('#platforms');holder.replaceChildren();for(const [id,p] of Object.entries(PLATFORMS)){
  const a=el('a','platform');a.href=searchUrl(id,state.needs.term);a.target='_blank';a.rel='noopener noreferrer';a.title='打开'+p.name+'，请在平台核实实际搜索结果';
  const mark=el('span','platform-icon',iconText[id]);mark.style.background=color[id];const info=el('span','platform-info');info.append(el('strong','',p.name),el('small','',sub[id]));a.append(mark,info,el('span','platform-arrow','↗'));holder.append(a);
