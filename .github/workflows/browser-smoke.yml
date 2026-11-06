@@ -21,5 +21,9 @@ jobs:
         run: |
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/shopping-http.log 2>&1 &
           sleep 2
-      - name: 执行网页交互验收
+      - name: 执行本地页面交互验收
+        run: python tests/browser_smoke.py
+      - name: 执行已发布网址的在线交互验收
+        env:
+          SHOPPING_SITE_URL: https://tanzhi6269330-star.github.io/shopping-intelligence/
         run: python tests/browser_smoke.py
