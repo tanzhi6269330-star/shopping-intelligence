@@ -2,13 +2,15 @@
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f9fc"><title>购物研究助手｜对话式选购</title>
 <style>
 :root{font-family:Inter,"Microsoft YaHei","PingFang SC",system-ui,sans-serif;color:#203244;background:#f6f8fb}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}a{color:#176c8e;text-decoration:none}a:hover{text-decoration:underline}.app{max-width:1180px;min-height:100vh;margin:auto;display:grid;grid-template-columns:245px 1fr;background:white;box-shadow:0 4px 60px #1a34440d}.sidebar{background:#12263b;color:#c7d6e5;padding:28px 18px;display:flex;flex-direction:column;gap:22px}.brand{font-weight:800;color:white;font-size:18px}.sub{color:#9db0c0;font-size:12px;line-height:1.65}.nav{background:#213951;color:white;padding:13px;border-radius:12px}.chip{border:1px solid #d8e1e8;border-radius:30px;padding:7px 12px;background:#fff;color:#405467;font-size:12px;cursor:pointer}.chip:hover{border-color:#257a84;color:#176d72}.sidebar a{color:#c9e9fa}.sidebottom{margin-top:auto;font-size:12px;line-height:1.8}.main{min-width:0;display:flex;flex-direction:column;max-height:100vh}.top{border-bottom:1px solid #e7edf2;padding:19px 30px;display:flex;justify-content:space-between;gap:10px;align-items:center}.top strong{font-size:17px}.status{background:#f0f5f6;color:#497280;padding:7px 11px;border-radius:20px;font-size:12px}.messages{overflow:auto;flex:1;padding:24px max(22px,calc((100% - 790px)/2));display:flex;flex-direction:column;gap:20px}.welcome{padding:22px;border:1px solid #e5ebf0;background:linear-gradient(110deg,#f5fafb,#fff);border-radius:18px}.welcome h1{margin:0 0 10px;font-size:25px}.welcome p{color:#617684;line-height:1.75;margin:0}.examples{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}.msg{max-width:92%;line-height:1.75;font-size:14px;white-space:pre-wrap}.msg.user{align-self:flex-end;background:#dff0ee;padding:12px 16px;border-radius:18px 18px 5px 18px;max-width:85%}.msg.assistant{align-self:flex-start;width:100%}.avatar{font-size:12px;color:#648398;font-weight:700;margin-bottom:7px}.message-body{border:1px solid #e4ebf0;padding:16px;border-radius:16px;background:#fff}.message-body p{margin:0 0 12px}.message-body p:last-child{margin-bottom:0}.panel{border:1px solid #e2e9ef;border-radius:13px;margin-top:12px;padding:14px;background:#fafeff}.panel strong{font-size:14px}.links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.link{display:flex;align-items:center;gap:6px;border:1px solid #d7e4e7;border-radius:9px;padding:10px;font-size:13px;background:white;min-width:0}.link:after{content:"↗";margin-left:auto}.note{color:#617985;font-size:12px;line-height:1.7}.brandtags{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.tag{padding:6px 10px;background:#f0f4f6;color:#36596c;border-radius:18px;font-size:12px}.composer{border-top:1px solid #e7ecf1;padding:18px max(22px,calc((100% - 790px)/2)) 23px;background:#fff}.composerbox{display:flex;align-items:center;gap:8px;border:1px solid #cedce5;border-radius:14px;padding:9px;background:#fff;box-shadow:0 3px 12px #162e420b}.composerbox input{width:100%;border:0;outline:0;padding:9px;font-size:15px}.primary{background:#126d69;color:white;border:0;border-radius:10px;padding:12px 19px;cursor:pointer;white-space:nowrap}.primary:hover{background:#0d5855}.footnote{font-size:11px;color:#728898;padding-top:8px}.follow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.question{font-weight:600}.clear{background:none;border:1px solid #afc2cf;color:#e3edf2;border-radius:9px;padding:8px;cursor:pointer}.sideitem{font-size:13px;line-height:1.9}.focus{font-size:12px;color:#d7e6f0;line-height:1.8;word-break:break-word}.sp{margin-top:14px;border-top:1px solid #345269;padding-top:14px}@media(max-width:760px){.app{display:flex;flex-direction:column}.sidebar{padding:14px;gap:7px}.sidebottom,.sidebar .sub,.sidebar .sideitem{display:none}.main{min-height:calc(100dvh - 68px);max-height:calc(100dvh - 68px)}.top{padding:12px 18px}.top strong{font-size:15px}.messages{padding:18px 14px}.composer{padding:10px 12px 14px}.links{grid-template-columns:1fr}.welcome h1{font-size:22px}} 
+.live-research{border:1px solid #cce3dc;border-radius:12px;padding:13px;margin-top:13px;background:#f3fbf8}.live-research strong{color:#146b62;font-size:13px}.live-item{padding:10px 0;border-top:1px solid #deede8;margin-top:8px}.live-item p{font-size:12px;color:#587078;line-height:1.6}.live-item small{font-size:11px;display:block;color:#886c4e;line-height:1.7}.live-item a{display:block;overflow-wrap:anywhere;font-size:13px}
 </style></head><body><div class="app">
 <aside class="sidebar"><div class="brand">◈ 购物研究助手</div><div class="sub">需求探索 · 高性价比研究 · 购物渠道</div><div class="nav">对话式购物研究</div><div class="sideitem">当前条件</div><div id="conditions" class="focus">还没有购物需求</div><div class="sp"><button class="clear" id="reset">开始新一轮购物</button></div><div class="sidebottom">免费网页研究原型<br>不自动下单 · 不虚构价格<br><a href="./legacy.html">打开旧版商品管理台</a></div></aside>
 <div class="main"><header class="top"><strong>想买什么？直接告诉我。</strong><span class="status">V0.7 · 对话研究版</span></header>
 <div class="messages" id="messages"><div class="welcome"><h1>先帮你挑对，再帮你找便宜。</h1><p>说出一个商品需求，我会逐步确定预算、用途与重要细节；推荐值得研究的品牌和型号方向，同时提供专业评测、用户口碑及各平台的搜索入口。</p><div class="examples"><button class="chip" data-example="帮我挑100元以内带麦克风的游戏耳机">100元以内游戏耳机</button><button class="chip" data-example="帮我找一台性价比高的洗衣机">性价比洗衣机</button><button class="chip" data-example="我想买个王者荣耀账号">王者荣耀账号</button></div></div></div>
-<form class="composer" id="chat-form"><div class="composerbox"><input id="chat-input" maxlength="500" placeholder="例如：找一款200元以内适合游戏的耳机" autocomplete="off" aria-label="输入购物需求"><button class="primary" type="submit">发送</button></div><div class="footnote">当前为本地规则对话 + 可验证搜索入口，尚未接入实时 AI 和全平台商品数据；不输出虚构的 TOP 3 或实时最低价。对话保存在本机浏览器。</div></form></div></div>
+<form class="composer" id="chat-form"><div class="composerbox"><input id="chat-input" maxlength="500" placeholder="例如：找一款200元以内适合游戏的耳机" autocomplete="off" aria-label="输入购物需求"><button class="primary" type="submit">发送</button></div><div class="footnote">支持免费联网搜索公开评测（存在共享额度限制），不等于已核验电商到手价。搜索会将精简品类、预算、用途等检索词发送给Tavily，不传送聊天全文、账号或订单。对话仅保存在本机浏览器。</div></form></div></div>
 <script type="module">
 import {makeState,update,nextQuestion,researchPlan} from "./conversation/engine.mjs";
+import {reviewQuery,fetchReviews,SEARCH_LIMIT} from "./chat/live-search.mjs";
 const KEY="shopping_chat_v07";let state=makeState();
 try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(raw&&typeof raw==="object"&&Array.isArray(raw.history)&&raw.history.length<100)state={...makeState(),...raw,history:raw.history}}catch{}
 const el=(tag,cls,text)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=text;return x};
@@ -18,8 +20,43 @@ function conditionText(){
 const pieces=[state.query||"未选品类",state.budget===null?"预算待确认":state.budget<0?"预算灵活":"预算≤"+state.budget+"元",state.brand?"指定品牌："+state.brand:"不限品牌",state.usage,state.connection,state.condition==="both"?"接受二手":state.condition==="used"?"只看二手":"优先新品",state.excludeBrand?"排除："+state.excludeBrand:""].filter(Boolean);
 return pieces.join(" · ");
 }
-function addLink(holder,name,url){const a=el("a","link",name);a.href=url;a.rel="noopener noreferrer";a.target="_blank";holder.append(a)}
-function assistant(text,question,plan){
+function addLink(holder,name,url){try{const u=new URL(url);if(u.protocol!=="https:")return;}catch{return;}const a=el("a","link",name);a.href=url;a.rel="noopener noreferrer";a.target="_blank";holder.append(a)}
+
+const reviewCache=new Map();
+const seenQueries=new Set();
+let searchCount=0;
+function renderLive(body,data){
+ const old=body.querySelector(".live-research");if(old)old.remove();
+ if(!data)return;
+ const box=el("section","live-research");
+ box.append(el("strong","",data.state==="loading"?"正在搜索公开评测…":"真实公开网页来源 · 待核验"));
+ box.append(el("div","note",data.message||""));
+ for(const src of (data.results||[])){
+   const item=el("div","live-item");
+   addLink(item,src.title||"无标题来源",src.url);
+   item.append(el("p","",String(src.excerpt||"").slice(0,220)));
+   item.append(el("small","",src.classification+" · "+src.reviewPriority));
+   if(src.flags?.length)item.append(el("small","",src.flags.join("；")));
+   box.append(item);
+ }
+ body.append(box);
+}
+async function searchReviews(turn,body,snapshot){
+ const q=reviewQuery(snapshot);
+ if(!q)return;
+ if(reviewCache.has(q)){turn.live=reviewCache.get(q);renderLive(body,turn.live);save();return;}
+ if(seenQueries.has(q))return;
+ if(searchCount>=SEARCH_LIMIT){turn.live={state:"limit",message:"本页最多自动搜索"+SEARCH_LIMIT+"次，以免消耗共享免费额度。可使用下方外部检索入口。",results:[]};renderLive(body,turn.live);save();return;}
+ searchCount++;seenQueries.add(q);
+ turn.live={state:"loading",message:"正在查找公开评测和使用反馈……",results:[]};
+ renderLive(body,turn.live);save();
+ const result=await fetchReviews(q);
+ reviewCache.set(q,result);
+ if(!state.history.includes(turn))return;
+ turn.live=result;renderLive(body,result);save();
+}
+
+function assistant(text,question,plan,live=null){
 const parent=el("div","msg assistant");parent.append(el("div","avatar","购物研究助手"));const body=el("div","message-body");body.append(el("p","",text));
 if(question){body.append(el("div","question",question.ask));const f=el("div","follow");for(const opt of question.options){const btn=el("button","chip",opt);btn.type="button";btn.addEventListener("click",()=>send(opt));f.append(btn)}body.append(f)}
 if(plan){
@@ -29,9 +66,10 @@ if(plan.brands.length){const tags=el("div","brandtags");for(const brand of plan.
 p.append(el("div","note","第一步：查看评测和真实用户口碑，排除营销宣传与旧型号。"));const l=el("div","links");for(const src of plan.sources)addLink(l,src.name,src.url);p.append(l);
 p.append(el("div","note","第二步：根据实际型号寻找购买链接。以下是各平台搜索入口，非自动抓取的商品清单。"));const ls=el("div","links");for(const src of plan.products)addLink(ls,src.name,src.url);p.append(ls);
 body.append(p)}
-parent.append(body);msgs.append(parent);msgs.scrollTop=msgs.scrollHeight;
+if(live)renderLive(body,live);
+parent.append(body);msgs.append(parent);msgs.scrollTop=msgs.scrollHeight;return body;
 }
-function replay(){document.querySelector("#conditions").textContent=conditionText();const records=state.history.slice(-24);if(records.length){msgs.replaceChildren();for(const x of records){if(x.role==="user")msgs.append(el("div","msg user",x.text));else if(x.role==="assistant")assistant(x.text,null,x.plan||null)}}msgs.scrollTop=msgs.scrollHeight}}
+function replay(){document.querySelector("#conditions").textContent=conditionText();const records=state.history.slice(-24);if(records.length){msgs.replaceChildren();for(const x of records){if(x.role==="user")msgs.append(el("div","msg user",x.text));else if(x.role==="assistant")assistant(x.text,null,x.plan||null,x.live||null)}}msgs.scrollTop=msgs.scrollHeight}}
 function send(t){
 const text=String(t||"").trim();if(!text)return;
 state=update(state,text);
@@ -40,8 +78,10 @@ const q=nextQuestion(state);
 const plan=researchPlan(state);
 let message=q?"我先记下条件："+conditionText()+"。\n还需要确认一个会明显影响结果的问题。":"当前筛选条件："+conditionText()+"。\n我整理了品牌研究线索、专业评测和购买渠道。尚未直接验证型号优劣与实时成交价，因此不会编造推荐排名。你可以继续说“便宜点”“只看无线”“接受二手”，我会继承先前条件。";
 if(state.category==="game")message+="\n游戏账号还必须逐项核验实名、换绑和找回风险。";
-assistant(message,q,q?null:plan);
-state.history.push({role:"assistant",text:message,plan:q?null:plan});save();msgs.scrollTop=msgs.scrollHeight;input.value="";input.focus();
+const record={role:"assistant",text:message,plan:q?null:plan};
+const body=assistant(message,q,q?null:plan);
+state.history.push(record);save();msgs.scrollTop=msgs.scrollHeight;input.value="";input.focus();
+if(!q&&!window.__SHOPPING_DISABLE_LIVE__)void searchReviews(record,body,{...state});
 }
 document.querySelector("#chat-form").addEventListener("submit",e=>{e.preventDefault();send(input.value)});
 for(const b of document.querySelectorAll("[data-example]"))b.addEventListener("click",()=>send(b.dataset.example));
