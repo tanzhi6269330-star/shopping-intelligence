@@ -14,11 +14,12 @@ export function update(state,text){
  const t=String(text||"").trim().slice(0,500);
  const s={...state,history:[...state.history.slice(-24),{role:"user",text:t}]};
  if(!t)return s;
- const m=t.match(/(?:不超过|以内|低于|最多|预算|大约|控制在|降到|便宜到|调整到|只要|以下|至多|小于|再便宜点到)\s*(\d{1,7})(?:\s*元)?/);
+ const m=t.match(/(?:不超过|低于|最多|预算|大约|控制在|降到|便宜到|调整到|只要|至多|小于|再便宜点到)\s*(\d{1,7})(?:\s*元)?/);
  const range=t.match(/(\d{1,7})\s*[-—~到至]\s*(\d{1,7})\s*元/);
  if(m)s.budget=Number(m[1]);
+ else if(/\d{1,7}\s*元?\s*(?:以内|以下)/.test(t))s.budget=Number(t.match(/(\d{1,7})\s*元?\s*(?:以内|以下)/)[1]);
  else if(range)s.budget=Number(range[2]);
- else if(/预算不限|不设预算|不限价/.test(t))s.budget=null;
+ else if(/预算不限|不设预算|不限价|预算灵活|预算可以灵活/.test(t))s.budget=-1;
  else if(/再便宜点|便宜一点|更便宜/.test(t)&&s.budget)s.budget=Math.max(1,Math.floor(s.budget*.7));
  const explicitBrand=t.match(/(?:指定|只要|仅看|限定|就买|必须是)\s*([\p{Script=Han}A-Za-z0-9]{2,14})(?:牌|品牌|的)?/u);
  const noBrand=t.match(/不要([\p{Script=Han}A-Za-z0-9]{2,12})/u);
@@ -55,7 +56,7 @@ export function researchPlan(s){
  const cat=CATEGORIES.find(x=>x.key===s.category)||CATEGORIES.at(-1);
  const subject=s.query||cat.name;
  const brandList=s.brand?[s.brand]:cat.brands.filter(b=>b!==s.excludeBrand);
- const terms=[subject,s.usage,s.connection,s.budget?"预算"+s.budget+"元":""].filter(Boolean).join(" ");
+ const terms=[subject,s.usage,s.connection,s.budget&&s.budget>0?"预算"+s.budget+"元":""].filter(Boolean).join(" ");
  const q=x=>"https://www.bing.com/search?q="+encodeURIComponent(x);
  const sources=[
   {name:"专业评测与横评",url:q(terms+" 2026 横向评测 性价比 缺点")},
