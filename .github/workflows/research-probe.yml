@@ -1,0 +1,50 @@
+name: 三平台免费公开网页采集实验
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "research/**"
+      - "tests/test_research.py"
+      - ".github/workflows/research-probe.yml"
+permissions:
+  contents: read
+concurrency:
+  group: public-platform-probe
+  cancel-in-progress: true
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: 获取仓库代码
+        uses: actions/checkout@v4
+      - name: 安装 Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 执行采集规范测试（不访问购物网站）
+        run: python -m unittest discover -s tests -p "test_research.py" -v
+      - name: 实测1688闲鱼盼之公开网页（遵守robots，无登录）
+        run: python research/public_probe.py --output output/公开网页采集实验.json
+      - name: 将采集结果写入工作流摘要
+        run: |
+          python - <<'PY'
+          import json, os
+          with open("output/公开网页采集实验.json",encoding="utf-8") as f:
+              results=json.load(f)
+          path=os.environ["GITHUB_STEP_SUMMARY"]
+          with open(path,"a",encoding="utf-8") as f:
+              f.write("## 三平台公开入口实测（非到手价证明）\n\n")
+              f.write("| 平台 | 入口类型 | robots | 实测结果 | 候选详情链接 |\n|---|---|---|---|---:|\n")
+              for r in results["平台结果"]:
+                  clean=lambda s: str(s).replace("|","/").replace("\n"," ")[:100]
+                  f.write(f"| {clean(r['平台'])} | {clean(r['入口类型'])} | {clean(r.get('robots检查',''))} | {clean(r['结果'])} | {r.get('发现详情链接数',0)} |\n")
+              f.write("\n**注意：**无真实价格核验；不可据此发布购买推荐。\n")
+          PY
+      - name: 上传可审计原始结果
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 三平台真实网络实验结果
+          path: output/公开网页采集实验.json
+          retention-days: 14
