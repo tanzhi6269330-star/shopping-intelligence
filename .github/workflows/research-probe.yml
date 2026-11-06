@@ -1,11 +1,6 @@
 name: 三平台免费公开网页采集实验
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "research/**"
-      - "tests/test_research.py"
-      - ".github/workflows/research-probe.yml"
 permissions:
   contents: read
 concurrency:
