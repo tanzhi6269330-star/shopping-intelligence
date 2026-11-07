@@ -63,44 +63,48 @@ def main():
             opts.page_load_strategy="eager"
             driver=webdriver.Chrome(options=opts)
             driver.set_page_load_timeout(20)
-            driver.get(URL)
             from time import sleep
-            sleep(4)
-            cur=urlparse(driver.current_url)
-            if cur.scheme!="https" or cur.hostname!=HOST:
-                out["状态"]="跳转到其他域名，停止"
-            else:
-                page=driver.find_element(By.TAG_NAME,"body").text
-                if re.search(r"安全验证|验证码|访问过于频繁|滑块验证|captcha",page,re.I):
+            ids=set()
+            out["页面次数"]=0
+            for page_index in (1,2,3,4):
+                page_url=URL if page_index==1 else URL+"?page="+str(page_index)
+                driver.get(page_url)
+                sleep(3)
+                cur=urlparse(driver.current_url)
+                if cur.scheme!="https" or cur.hostname!=HOST:
+                    out["状态"]="跳转到其他域名，停止"
+                    break
+                page_text=driver.find_element(By.TAG_NAME,"body").text
+                if re.search(r"安全验证|验证码|访问过于频繁|滑块验证|captcha",page_text,re.I):
                     out["状态"]="出现平台验证，停止"
-                else:
-                    anchors=driver.find_elements(By.CSS_SELECTOR,"a[href*='goodsDetails']")
-                    ids=set()
-                    for a in anchors:
-                        href=a.get_attribute("href") or ""
-                        found=re.search(r"/goodsDetails/([A-Za-z0-9]{4,12})/6",href)
-                        if not found or found.group(1) in ids:continue
-                        ids.add(found.group(1))
-                        piece=""
-                        element=a
-                        for _ in range(5):
-                            try:
-                                txt=element.text
-                                if "皮肤数量" in txt and ("¥" in txt or "￥" in txt) and len(txt)<2000:
-                                    piece=txt
-                                    break
-                                element=element.find_element(By.XPATH,"..")
-                            except Exception:break
-                        if not piece:
-                            piece=a.text
-                        values=extract(piece)
-                        out["样本"].append({"编号":found.group(1),"链接":href.split("?")[0],
-                            **values,"原始简要文本":piece[:340]})
-                        if len(out["样本"])>=80:break
-                    out["状态"]="完成单页采样"
-                    out["页面详情链接数"]=len(anchors)
-                    out["样本数"]=len(out["样本"])
-                    out["页面文本预览"]=page[:1400] if len(out["样本"])<2 else ""
+                    break
+                anchors=driver.find_elements(By.CSS_SELECTOR,"a[href*='goodsDetails']")
+                count_before=len(ids)
+                for a in anchors:
+                    href=a.get_attribute("href") or ""
+                    found=re.search(r"/goodsDetails/([A-Za-z0-9]{4,12})/6",href)
+                    if not found or found.group(1) in ids:continue
+                    ids.add(found.group(1))
+                    piece=""
+                    element=a
+                    for _ in range(5):
+                        try:
+                            txt=element.text
+                            if "皮肤数量" in txt and ("¥" in txt or "￥" in txt) and len(txt)<2000:
+                                piece=txt
+                                break
+                            element=element.find_element(By.XPATH,"..")
+                        except Exception:break
+                    if not piece:piece=a.text
+                    values=extract(piece)
+                    out["样本"].append({"编号":found.group(1),"链接":href.split("?")[0],
+                        **values,"列表页":page_index,"原始简要文本":piece[:340]})
+                out["页面次数"]+=1
+                if len(ids)==count_before:
+                    out["分页说明"]="下一页查询未获得新商品，停止"
+                    break
+            if "状态" not in out:out["状态"]="完成有限公开列表采样"
+            out["样本数"]=len(out["样本"])
         except Exception as e:out["状态"]=f"访问异常 {type(e).__name__}"
         finally:
             if driver:driver.quit()
