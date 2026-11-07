@@ -1,0 +1,45 @@
+name: 盼之指定商品编号公开详情诊断
+on:
+  workflow_dispatch:
+    inputs:
+      product_code:
+        description: "公开商品编号"
+        required: true
+        default: "C8PVQM"
+        type: string
+      game_id:
+        description: "商品详情链接游戏参数（王者荣耀为6）"
+        required: true
+        default: "6"
+        type: string
+  push:
+    paths:
+      - "research/lookup_pzds.py"
+      - ".github/workflows/pzds-exact-lookup.yml"
+permissions:
+  contents: read
+jobs:
+  lookup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: 检出源码
+        uses: actions/checkout@v4
+      - name: 设置Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装单页浏览器依赖
+        run: python -m pip install selenium
+      - name: 访问指定的公开详情页一次
+        env:
+          PZDS_CODE: ${{ inputs.product_code || 'C8PVQM' }}
+          PZDS_GAME: ${{ inputs.game_id || '6' }}
+        run: python research/lookup_pzds.py
+      - name: 上传诊断证据
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pzds-public-lookup
+          path: output/pzds_exact_listing.json
+          retention-days: 3
