@@ -1,0 +1,29 @@
+name: 王者荣耀公开挂牌样本校准
+on:
+  push:
+    paths:
+      - "research/pzds_market_probe.py"
+      - ".github/workflows/pzds-market-sample.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sample:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装浏览器支持
+        run: python -m pip install selenium
+      - name: 单页抓取公开挂牌样本
+        run: python research/pzds_market_probe.py
+      - name: 上传样本证据
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pzds-market-sample
+          path: output/pzds_market_sample.json
+          retention-days: 7
